@@ -1,4 +1,4 @@
-
+import os
 
 def traverse(wire):
     directions = {'R' : [1,0], 'L' : [-1,0], 'U' : [0,1], 'D' : [0,-1]}
@@ -13,7 +13,7 @@ def traverse(wire):
             pos[(x,y)] = steps
     return pos
  
-with open("day3/input.txt") as f:
+with open(os.path.join("day3","input.txt")) as f:
     wires =  [wire.split(",") for wire in f.read().split("\n")]
     #wires = [['R8','U5','L5','D3'], ['U7','R6','D4','L4']] #tests
     w_pos = []

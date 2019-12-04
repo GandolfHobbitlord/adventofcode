@@ -1,10 +1,10 @@
 import operator
-
+import os
 op = {
    1: operator.add,
    2: operator.mul,}
 
-with open("day2/input_day2.txt") as f:
+with open(os.path.join("day2","input_day2.txt")) as f:
     data = [int(i) for i in f.read().split(",")]
     data_copy = data.copy()
     for i in range(0,100):
