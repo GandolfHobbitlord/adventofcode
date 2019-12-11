@@ -12,71 +12,69 @@ def get_mode(instr,arg):
     
 class Machine:
     def __init__(self,code, input=[]):
-        self.code = code.copy()
+        self.data = code.copy()
         self.ptr = 0
         self.input = input
 
     def add_input(self, inp):
         self.input.append(inp)
 
+
     def run(self):
-        return self._run(self.code)
-
-
-    def _run(self, data):
-        ptr = self.ptr
-        while data[ptr] != 99:        
-            instr = data[ptr]
+        while True:        
+            instr = self.data[self.ptr]
             op = instr % 100
+            if self.data[self.ptr] == 99:
+                raise StopIteration
             if op == 1: #add
-                val1 = read(data, ptr+1,get_mode(instr,1))
-                val2 = read(data, ptr+2,get_mode(instr,2))
-                data[data[ptr+3]] = val1 + val2
-                ptr += 4
+                val1 = read(self.data, self.ptr+1,get_mode(instr,1))
+                val2 = read(self.data, self.ptr+2,get_mode(instr,2))
+                self.data[self.data[self.ptr+3]] = val1 + val2
+                self.ptr += 4
             elif op == 2:
-                val1 = read(data, ptr+1,get_mode(instr,1))
-                val2 = read(data, ptr+2,get_mode(instr,2))
-                data[data[ptr+3]] = val1 * val2
-                ptr += 4
+                val1 = read(self.data, self.ptr+1,get_mode(instr,1))
+                val2 = read(self.data, self.ptr+2,get_mode(instr,2))
+                self.data[self.data[self.ptr+3]] = val1 * val2
+                self.ptr += 4
             elif op == 3: #input
                 if not self.input:
-                    return
-                data[data[ptr+1]] = self.input.pop(0)
-                ptr +=2
+                    raise Exception("Invalid input")
+                self.data[self.data[self.ptr+1]] = self.input.pop(0)
+                self.ptr +=2
             elif op == 4: #output
-                output = read(data,ptr+1,get_mode(instr,1))
-                #print(output)
-                ptr +=2
+                output = read(self.data,self.ptr+1,get_mode(instr,1))
+                self.ptr +=2
+                return output
             elif op == 5:
-                val1 = read(data, ptr+1,get_mode(instr,1))
-                val2 = read(data, ptr+2,get_mode(instr,2))
+                val1 = read(self.data, self.ptr+1,get_mode(instr,1))
+                val2 = read(self.data, self.ptr+2,get_mode(instr,2))
                 if val1 != 0:
-                    ptr = val2
+                    self.ptr = val2
                 else:
-                    ptr +=3
+                    self.ptr +=3
             elif op == 6:
-                val1 = read(data, ptr+1,get_mode(instr,1))
-                val2 = read(data, ptr+2,get_mode(instr,2))
+                val1 = read(self.data, self.ptr+1,get_mode(instr,1))
+                val2 = read(self.data, self.ptr+2,get_mode(instr,2))
                 if 0 == val1:
-                    ptr = val2
+                    self.ptr = val2
                 else:
-                    ptr +=3
+                    self.ptr +=3
             elif op == 7:
-                val1 = read(data, ptr+1,get_mode(instr,1))
-                val2 = read(data, ptr+2,get_mode(instr,2))
+                val1 = read(self.data, self.ptr+1,get_mode(instr,1))
+                val2 = read(self.data, self.ptr+2,get_mode(instr,2))
                 if val1 < val2:
-                    data[data[ptr+3]] = 1
+                    self.data[self.data[self.ptr+3]] = 1
                 else:
-                    data[data[ptr+3]] = 0
-                ptr +=4
+                    self.data[self.data[self.ptr+3]] = 0
+                self.ptr +=4
             elif op == 8:
-                val1 = read(data, ptr+1,get_mode(instr,1))
-                val2 = read(data, ptr+2,get_mode(instr,2))
+                val1 = read(self.data, self.ptr+1,get_mode(instr,1))
+                val2 = read(self.data, self.ptr+2,get_mode(instr,2))
                 if val1 == val2:
-                    data[data[ptr+3]] = 1
+                    self.data[self.data[self.ptr+3]] = 1
                 else:
-                    data[data[ptr+3]] = 0
-                ptr +=4
+                    self.data[self.data[self.ptr+3]] = 0
+                self.ptr +=4
             else:
                 raise Exception("Invalid operation {}".format(op))
         return output
@@ -94,8 +92,31 @@ def part1(data):
             max_output = output
             print("New max {} from phases {}".format(output, phases))
 
+def part2_2(data):
+    phases = list(itertools.permutations([5, 6, 7, 8, 9]))
+    best = [0, 0]
+    for phase in phases:
+        amplifiers = []
+        for i in range(len(phase)):
+            amplifiers.append(Machine(data.copy(), [phase[i]]))
+        in_signal = 0
+        out_signal = in_signal
+        halt = False
+        while not halt:
+            try:
+                for j, amplifier in enumerate(amplifiers):
+                    amplifier.add_input(in_signal)
+                    out_signal = amplifier.run()
+                    in_signal = out_signal
+            except StopIteration:
+                halt = True
+        result = [phase, out_signal]
+        if result[1] > best[1]:
+            best = result
+    print("Part #2:", best)
+
 with open(os.path.join("day7","input_day7.txt")) as f:
     data = [int(i) for i in f.read().split(",")]
     #data = [3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0]
     #phases = [4,3,2,1,0]
-    part1(data)
+    part2_2(data)

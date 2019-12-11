@@ -1,6 +1,7 @@
 import operator
 import os
 import math
+
 op = {
    1: operator.add,
    2: operator.mul,}
