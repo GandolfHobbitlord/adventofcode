@@ -11,7 +11,7 @@ def part2(input_list):
         if sum(perm) == 2020:
             return perm
 
-with open(Path("2020") / "day1_input.txt") as f:
+with open(Path("2020") / "day1" / "day1_input.txt") as f:
     numbers = [int(x) for x in f.read().splitlines()]
 
 x,y = part1(numbers)
