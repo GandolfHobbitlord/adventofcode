@@ -19,12 +19,7 @@ def get_valid_pass_part2(input):
     valid_pass = []
     for line in input:
         lo, hi, char, password = parse_line(line)
-        count = 0
-        if password[lo-1] == char:
-            count +=1
-        if password[hi-1] == char:
-            count +=1
-        if count == 1:
+        if (password[lo-1] + password[hi-1]).count(char) == 1:
             valid_pass.append(password)
     return valid_pass
 
