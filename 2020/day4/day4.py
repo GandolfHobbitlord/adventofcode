@@ -62,7 +62,9 @@ run_tests()
 
 with open(Path("2020") / "day4" / "day4_input.txt") as f:
     raw_passports = [line for line in f.read().split("\n\n")]
+
 passports = [parse_passport(p) for p in raw_passports]
 valid_pass = [p for p in passports if is_passport_valid(p)]
+
 print(f"Part 1 Number of valid passports {len(valid_pass)}")
 print(f"Part 2 Number of valid passports {sum([valid_part2(p) for p in valid_pass])}")
