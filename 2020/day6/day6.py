@@ -5,7 +5,8 @@ def get_uniques(inp):
     return set(re.findall(r'(\w)',inp))
 
 def get_question_all_answered(group):
-    return set.intersection(*(get_uniques(person) for person in group.split('\n')))
+    return set.intersection(*(set(person) for person in group.split('\n')))
+    # return set.intersection(*map(set,group.split('\n'))) Optional solution
 
 def run_test():
     assert get_uniques('abc') == {'a','b','c'}
