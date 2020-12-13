@@ -16,18 +16,13 @@ def find_next_depart(time,busses):
         time +=1
 
 def part2(busses):
-    max_off, max_bus = max(busses,key=lambda item:item[1])
+    step = 1
     time = 0
-    print(max_bus)
-    time = max_bus - max_off
-    while True:
-        # print(time)
-        x = [(time + offset) % bus == 0 for offset, bus in busses]
-        # print(x)
-        if all(x):
-            return time
-        time += max_bus
-    return time
+    for offset, bus in busses:
+        while((time+offset) % bus != 0):
+            time +=step
+        step *=bus
+    return(time)
 
 def run_test():
     inp =  '939\n7,13,x,x,59,x,31,19'
@@ -50,5 +45,5 @@ run_test()
 inp = '1002394\n13,x,x,41,x,x,x,37,x,x,x,x,x,419,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,19,x,x,x,23,x,x,x,x,x,29,x,421,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,17'
 time,busses = parse_input1(inp)
 dep_time, dep_bus = find_next_depart(time,busses)
-print((dep_time-time)*dep_bus)
-print(part2(parse_input2(inp)))
+print(f"Part1 ans: {(dep_time-time)*dep_bus}")
+print(f"Part2 ans: {part2(parse_input2(inp))}")
