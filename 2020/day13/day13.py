@@ -21,7 +21,7 @@ def part2(busses):
     for offset, bus in busses:
         while((time+offset) % bus != 0):
             time +=step
-        step *=bus
+        step = np.lcm(bus,step)
     return(time)
 
 def run_test():
