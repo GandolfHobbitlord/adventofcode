@@ -12,10 +12,6 @@ def mask_val_v2(mask,pos):
     #force X positions and return string
     return ''.join(['X' if mask_char == 'X' else pos_char for mask_char, pos_char in zip(mask,pos_str)])
 
-
-def update_mem1(mem, mask, pos,val):
-    mem[pos] = mask_val_v1(mask,val)
-
 def possible_addr(mask_addr):
     if mask_addr.count('X') == 0:
         yield int(mask_addr,2)

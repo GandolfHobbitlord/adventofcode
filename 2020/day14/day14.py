@@ -19,7 +19,6 @@ def update_mem1(mem, mask, pos,val):
 #FIX THIS RECURSION!!
 def update_mem2(mem, pos_mask, val):
     if pos_mask.count('X') == 0:
-        print(pos_mask)
         mem[int(pos_mask,2)] = val
     else:
         update_mem2(mem,pos_mask.replace('X','0',1), val)
