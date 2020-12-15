@@ -2,8 +2,8 @@ import re
 from pathlib import Path
 
 def mask_val_v1(mask,val):
-    val = val | int(mask.replace('X','0'),2) # set ones
-    val = val & int(mask.replace('X','1'),2) # set zeros
+    val |= int(mask.replace('X','0'),2) # set ones
+    val &= int(mask.replace('X','1'),2) # set zeros
     return val
 
 def mask_val_v2(mask,pos):
