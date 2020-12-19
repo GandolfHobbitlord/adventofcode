@@ -1,20 +1,22 @@
 from collections import defaultdict
 def create_conway(inp):
-    active_cubes = []
+    active_cubes = set()
     for i, line in enumerate(inp.splitlines()):
         for j, char in enumerate(line):
             if char == '#':
-                active_cubes.append((i,j,0))
+                active_cubes.add((i,j,0,0))
     return active_cubes
 
 def neighbors(pos):
-    x,y,z = pos
+    #Prob could use some fancy recursion here
+    x,y,z,w = pos
     for i in range(x-1,x+2):
         for j in range(y-1,y+2):
             for k in range(z-1,z+2):
-                if (i,j,k) == pos:
-                    continue
-                yield (i,j,k)
+                for l in range(w-1,w+2):
+                    if (i,j,k,l) == pos:
+                        continue
+                    yield (i,j,k,l)
 
 def get_active_neighbors(pos,active_cubes):
     return len([n for n in neighbors(pos) if n in active_cubes])
@@ -39,7 +41,7 @@ def run_test():
     print(conway)
     for _ in range(6):
         conway = cycle(conway)
-    assert len(conway) == 112
+    # assert len(conway) == 112
     print([ c for c in conway if c[2] == -1])
 run_test()
 
