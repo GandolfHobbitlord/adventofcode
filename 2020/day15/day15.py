@@ -14,6 +14,7 @@ def play_memory_game(starting_num, last_turn):
         else:
             last_num = memory[last_num][1] - memory[last_num][0]
             memory[last_num].append(turn)
+        print(last_num)
     return last_num
 
 def run_test():
