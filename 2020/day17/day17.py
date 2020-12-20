@@ -1,22 +1,34 @@
 from collections import defaultdict
-def create_conway(inp):
+def create_conway(inp, dim = 3):
     active_cubes = set()
     for i, line in enumerate(inp.splitlines()):
         for j, char in enumerate(line):
             if char == '#':
-                active_cubes.add((i,j,0,0))
+                pos = [i,j]
+                for _ in range(2,dim):
+                    pos.append(0)
+                active_cubes.add(tuple(pos))
+    print(active_cubes)
     return active_cubes
 
+# def neighbors(pos):
+#     #Prob could use some fancy recursion here
+#     x,y,z,w = pos
+#     for i in range(x-1,x+2):
+#         for j in range(y-1,y+2):
+#             for k in range(z-1,z+2):
+#                 for l in range(w-1,w+2):
+#                     if (i,j,k,l) == pos:
+#                         continue
+#                     yield (i,j,k,l)
 def neighbors(pos):
-    #Prob could use some fancy recursion here
-    x,y,z,w = pos
-    for i in range(x-1,x+2):
-        for j in range(y-1,y+2):
-            for k in range(z-1,z+2):
-                for l in range(w-1,w+2):
-                    if (i,j,k,l) == pos:
-                        continue
-                    yield (i,j,k,l)
+    pos = list(pos)
+    if len(pos) == 1:
+        for i in range(pos[0]-1,pos[0]+2):
+            yield [i]
+    else:
+        for i in range(pos[0]-1, pos[0]+2):
+            yield list(neighbors(pos[:-1])).append(i)
 
 def get_active_neighbors(pos,active_cubes):
     return len([n for n in neighbors(pos) if n in active_cubes])
@@ -43,7 +55,7 @@ def run_test():
         conway = cycle(conway)
     # assert len(conway) == 112
     print([ c for c in conway if c[2] == -1])
-run_test()
+# run_test()
 
 inp = """....#...
 .#..###.
@@ -53,7 +65,8 @@ inp = """....#...
 #.......
 ##....#.
 .##..#.#"""
-active_cubes = create_conway(inp)
+active_cubes = create_conway(inp,4)
+x = list(neighbors([0,1]))
 for _ in range(6):
     active_cubes = cycle(active_cubes)
 print(len(active_cubes))
