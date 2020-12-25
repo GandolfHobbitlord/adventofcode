@@ -12,7 +12,7 @@ def get_starting_black_tiles(tot_commands):
         for direction in command:
             current_pos += DIRECTIONS[direction]
         tiles[tuple(current_pos)] += 1
-    return [key for key,val in tiles.items() if val % 2]
+    return set([key for key,val in tiles.items() if val % 2])
 
 def neighbors(tile):
     for direction in DIRECTIONS.values():
@@ -21,19 +21,16 @@ def neighbors(tile):
 def get_num_of_neighbors(tile, tiles):
     return len([neighbor for neighbor in neighbors(tile) if tuple(neighbor) in tiles])
 
-def part2(tiles):
+def part2_iteration(tiles):
     new_tiles = set()
-    # print(tiles)
     for tile in tiles:
         num_neighbors = get_num_of_neighbors(tile,tiles)
         if 0 < num_neighbors <= 2:
             new_tiles.add(tile)
         for neighbor in neighbors(tile):
-            # print(neighbor)
             if tuple(neighbor) not in tiles and get_num_of_neighbors(neighbor,tiles) == 2:
                 new_tiles.add(neighbor)
-    # print(new_tiles)
-    return list(new_tiles)
+    return new_tiles
 
 def parse_input(inp):
     total_commands = []
@@ -57,9 +54,7 @@ def run_test():
     tot_commands = parse_input(inp)
     tiles = get_starting_black_tiles(tot_commands)
     assert len(tiles) == 10
-    for _ in range(3):
-        tiles = part2(tiles)
-        print(len(tiles))
+    assert len(part2_iteration(tiles)) == 15
 run_test()
 
 with open(Path("2020") / "day24" / "day24_input.txt") as f:
@@ -68,6 +63,6 @@ black_tiles = get_starting_black_tiles(parse_input(inp))
 print(f"Answer part 1 {len(black_tiles)}")
 
 for _ in range(100):
-    black_tiles = part2(black_tiles)
-    print(len(black_tiles))
+    black_tiles = part2_iteration(black_tiles)
 
+print(f'Answer part 2 {len(black_tiles)}')
