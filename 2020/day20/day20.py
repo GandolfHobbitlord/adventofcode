@@ -2,50 +2,68 @@ import re
 from pathlib import Path
 import numpy as np
 
-def get_perms(tile):
-    perms = []
-    for _ in range(2):
-        tile = np.fliplr(tile)
-        for _ in range(4):
-            tile = np.rot90(tile)
-            perms.append(tile)
-    return perms
+class Tile():
+    def __init__(self,tile,nr):
+        self.tile = tile.copy()
+        self.nr = nr
+    @property
+    def up(self):
+        return self.tile[0,:]
+    @property
+    def left(self):
+        return self.tile[:,0]
+    @property
+    def down(self):
+        return self.tile[-1,:]
+    @property
+    def right(self):
+        return self.tile[:,-1]
+    def edges(self):
+        return [self.right, self.left, self.up, self.down]
+
+def rotate(tile):
+    return Tile(np.rot90(tile),tile.nr)
+
+def fliplr(tile):
+    return Tile(np.fliplr(tile),tile.nr)
 
 def get_tile(inp):
     tile_nr = re.search(r'\d+', inp.splitlines()[0])[0]
     print(inp.splitlines()[1:])
     t = np.array([[c for c in line] for line in inp.splitlines()[1:]])
-    return int(tile_nr), get_perms(t)
+    return Tile(t, int(tile_nr))
 
 def parse_input(inp):
     tiles = inp.split('\n\n')
     return [get_tile(tile) for tile in tiles]
 
-def check(tile, other):
-    return (tile[0,:] == other[0,:]).all()
+def are_neighbors(tile,other):
+    if tile.nr == other.nr:
+        raise RuntimeError("Neighbors are same tile")
 
-def get_num_of_neighbors(tile_tuple, other_tiles):
-    tile_nr, tile_perms = tile_tuple
-    neighbor = 0
-    # print(tile)
-    for other_nr,other_perms in other_tiles:
-        if tile_nr == other_nr:
+    for edge in tile.edges():
+        for other_edge in other.edges():
+            if (edge == other_edge).all() or (np.flipud(edge) == other_edge).all() :
+                return True
+    return False
+
+def get_neighbors(tile, other_tiles):
+    neighbors = []
+    for other in other_tiles:
+        if tile.nr == other.nr:
             continue
-        for other_perm in other_perms:
-            for tile in tile_perms:
-                # print(other_perm)
-                if check(tile, other_perm):
-                    neighbor += 1
-    return neighbor // 2 # will find each neighbor twice
+        if are_neighbors(tile, other):
+            neighbors.append(other)
+    # print(neighbors)
+    return neighbors
 
 
 
 
 def part1(tiles):
-    corners = [nr for nr, perms in tiles if get_num_of_neighbors((nr,perms),tiles) == 2]
+    corners = [tile.nr for tile in tiles if len(get_neighbors(tile,tiles)) == 2]
     print(corners)
     return  np.prod(corners,dtype=np.uint64)
-        # print(nr, get_num_of_neighbors((nr,perms),tiles))
 
 
 def run_test():
@@ -58,5 +76,7 @@ run_test()
 
 with open(Path("2020") / "day20" / "day20_input.txt") as f:
     inp = f.read()
+
 tiles = parse_input(inp)
 print(part1(tiles))
+print(part2(tiles))
