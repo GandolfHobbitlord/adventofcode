@@ -5,15 +5,13 @@ def to_bins(inp):
     for d in inp:
         l[d] +=1
     return l
+
 def pass_days(inp, days = 3):
-    q = to_bins(inp)
+    fishes = to_bins(inp)
     for _ in range(days):
-        babies = q[0]
-        babies = q[0]
-        q = q[1:]
-        q[6] += babies
-        q.append(babies)
-    return sum(q)
+        fishes = fishes[1:] + [fishes[0]]
+        fishes[6] += fishes[-1]
+    return sum(fishes)
 
 
 def run_tests():
