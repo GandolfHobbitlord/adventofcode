@@ -1,12 +1,9 @@
 from pathlib import Path
 
 def to_bins(inp):
-    l = [0,0,0,0,0,0,0,0,0]
-    for d in inp:
-        l[d] +=1
-    return l
+    return [inp.count(i) for i in range(9)]
 
-def pass_days(inp, days = 3):
+def pass_days(inp, days):
     fishes = to_bins(inp)
     for _ in range(days):
         fishes = fishes[1:] + [fishes[0]]
@@ -16,7 +13,6 @@ def pass_days(inp, days = 3):
 
 def run_tests():
     data = [3,4,3,1,2]
-    pass_days(data)
     assert 5 == pass_days(data,1)
     assert 6 == pass_days(data,2)
     assert 7 == pass_days(data,3)
