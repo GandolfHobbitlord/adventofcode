@@ -14,7 +14,7 @@ def mark(boards, num):
         board[board == num] = MARK
 
 def is_winner(board):
-    for row in board:
+    np.all(row == MARK) for row in board:
         if np.all(row == MARK):
             return True
     for column in board.T:
