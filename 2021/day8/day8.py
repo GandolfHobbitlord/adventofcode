@@ -1,73 +1,81 @@
 import re
 from pathlib import Path
-from collections import defaultdict
 from typing import Counter
 
-NUM_KEY =  {
-    '0' : set("abcefg"),
-    '1' : set("cf"),
-    '2' : set("acdeg"),
-    '3' : set("acdfg"),
-    '4' : set("bcdf"),
-    '5' : set("abdfg"),
-    '6' : set("abdefg"),
-    '7' : set("acf"),
-    '8' : set("abcdefg"),
-    '9' : set("abcdfg")
-}
-FREQ = Counter()
-for val in NUM_KEY.values():
-    FREQ.update(val)
 
-ID = {}
-for val, string_id in NUM_KEY.items():
-    list_id = sorted([FREQ[letter] for letter in string_id])
-    list_str_id = ''.join(str(num) for num in list_id)
-    # print(list_str_id)
-    ID[list_str_id] = val
-print(ID)
+def create_id_dict():
+    #Each number will have a unique frequency id, eg number of occurences for each letter
+    numbers_key =  {
+    '0' : "abcefg",
+    '1' : "cf",
+    '2' : "acdeg",
+    '3' : "acdfg",
+    '4' : "bcdf",
+    '5' : "abdfg",
+    '6' : "abdefg",
+    '7' : "acf",
+    '8' : "abcdefg",
+    '9' : "abcdfg"
+    }
+    frequency = Counter()
+    for val in numbers_key.values():
+        frequency.update(val)
 
-
-def part2(input, ouput_nums):
-    line_frequency = Counter()
-    ans = ""
-    for val in input:
-        line_frequency.update(val)
-    for num in ouput_nums:
-        list_id = sorted([line_frequency[letter] for letter in num])
+    id = {}
+    for val, string_id in numbers_key.items():
+        list_id = sorted([frequency[letter] for letter in string_id])
         list_str_id = ''.join(str(num) for num in list_id)
-        print(ID[list_str_id])
-        ans += ID[list_str_id]
-    return int(ans)
+        id[list_str_id] = val
+    return id
 
-def parse_line(line):
-    pattern, output = line.split('|')
-    pattern_set = [set(p) for p in re.findall('\w+',pattern)]
-    output_set = [set(p) for p in re.findall('\w+',output)]
+ID = create_id_dict()
 
-    return pattern_set, output_set
+def get_output_number(input_patterns, output_patterns):
+    frequency = Counter()
+    for val in input_patterns:
+        frequency.update(val)
 
-def find_valid_part1(outputs):
+    output = ""
+    for num in output_patterns:
+        list_id = sorted([frequency[letter] for letter in num])
+        list_str_id = ''.join(str(num) for num in list_id)
+        output += ID[list_str_id]
+    return int(output)
+
+def find_unique(outputs):
     ans = 0
     for o in outputs:
         if len(o) == 2 or len(o) == 3 or len(o) == 4 or len(o) == 7:
-            print(o, "is valid")
             ans +=1
     return ans
+
+
+def parse_line(line):
+    pattern, output = line.split('|')
+    input_patterns = re.findall('\w+',pattern)
+    output_patterns = re.findall('\w+', output)
+    return input_patterns, output_patterns
+
+def part1(nums):
+    return sum([find_unique(out_pattern) for _, out_pattern in nums])
+
+def part2(nums):
+    return sum([get_output_number(inp_patterns, out_patterns) for inp_patterns, out_patterns in nums])
 
 def run_tests():
     with open(Path("2021") / "day8" / "day8_test.txt") as f:
         nums =  [parse_line(line) for line in f.read().splitlines()]
-    # assert sum([find_valid_part1(n[1]) for n in nums]) == 26
+    assert part1(nums) == 26
     inp = "acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf"
     inp_pattern, output_nums = parse_line(inp)
-    part2(inp_pattern, output_nums) == 5353
+    assert get_output_number(inp_pattern, output_nums) == 5353
+    assert part2(nums) == 61229
 
 
+run_tests()
 
 with open(Path("2021") / "day8" / "day8_input.txt") as f:
     nums =  [parse_line(line) for line in f.read().splitlines()]
-    print(sum([part2(n[0], n[1]) for n in nums]))
 
-run_tests()
-# part1(data)
+print(f"Answer part 1 {part1(nums)}")
+print(f"Answer part 2 {part2(nums)}")
