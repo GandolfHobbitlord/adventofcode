@@ -4,7 +4,7 @@ from typing import Counter
 
 
 def create_id_dict():
-    #Each number will have a unique frequency id, eg number of occurences for each letter
+    #Each number will have a unique frequency id, ie. number of occurences for each letter
     numbers_key =  {
     '0' : "abcefg",
     '1' : "cf",
@@ -23,9 +23,8 @@ def create_id_dict():
 
     id = {}
     for val, string_id in numbers_key.items():
-        list_id = sorted([frequency[letter] for letter in string_id])
-        list_str_id = ''.join(str(num) for num in list_id)
-        id[list_str_id] = val
+        list_id = str(sorted([frequency[letter] for letter in string_id]))
+        id[list_id] = val
     return id
 
 ID = create_id_dict()
@@ -37,9 +36,8 @@ def get_output_number(input_patterns, output_patterns):
 
     output = ""
     for num in output_patterns:
-        list_id = sorted([frequency[letter] for letter in num])
-        list_str_id = ''.join(str(num) for num in list_id)
-        output += ID[list_str_id]
+        list_id = str(sorted([frequency[letter] for letter in num])) #str to make it hashable
+        output += ID[list_id]
     return int(output)
 
 def find_unique(outputs):
