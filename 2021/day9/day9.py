@@ -1,17 +1,19 @@
 import numpy as np
 from pathlib import Path
 from skimage.segmentation import flood_fill
+
 def parse_line(line):
     return [int(char) for char in line]
 
 def data_to_np_array(data):
     mat = np.array([parse_line(line)for line in data.splitlines()])
-    return np.pad(mat,1,mode='constant',constant_values=9)
+    return np.pad(mat, 1, mode='constant', constant_values=9)
+
+def score1(lowests):
+    return sum(num +1 for num in lowests)
 
 def score2(flood_areas):
     return np.prod(sorted(flood_areas)[-3:])
-def score1(lowests):
-    return sum(num +1 for num in lowests)
 
 def is_lowest(X,i,j):
     val = X[i,j]
@@ -63,5 +65,5 @@ with open(Path("2021") / "day9" / "day9_input.txt") as f:
 
 run_tests()
 
-print(part1(X))
-print(part2(X))
+print(f"Answer part 1 {part1(X)}")
+print(f"Answer part 2 {part2(X)}")
