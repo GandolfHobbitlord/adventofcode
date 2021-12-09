@@ -5,7 +5,13 @@ def parse_line(line):
     return [int(char) for char in line]
 
 def data_to_np_array(data):
-    return np.array([parse_line(line)for line in data.splitlines()])
+    mat = np.array([parse_line(line)for line in data.splitlines()])
+    return np.pad(mat,1,mode='constant',constant_values=9)
+
+def score2(flood_areas):
+    return np.prod(sorted(flood_areas)[-3:])
+def score1(lowests):
+    return sum(num +1 for num in lowests)
 
 def is_lowest(X,i,j):
     val = X[i,j]
@@ -18,29 +24,27 @@ def is_lowest(X,i,j):
     return True
 
 def get_lowpoints(X):
-    size = X.shape
     lowests = []
     points = []
-    X = np.pad(X,1,mode='constant',constant_values=10)
-    Y = np.zeros(size)
-    for i in range(1,size[0]+1):
-        for j in range(1,size[1]+1):
-            if is_lowest(X,i,j):
-                lowests.append(X[i,j])
-                points.append((i-1,j-1)) #remove padding
+    colmuns, rows = X.shape
+    for col in range(1,colmuns):
+        for row in range(1,rows):
+            if is_lowest(X,col,row):
+                lowests.append(X[col,row])
+                points.append((col,row)) #remove padding
     return lowests, points
-#TODO cleanup
+
+def get_flooded_area(X, flood_point):
+    basin_map = (X == 9).astype(int)
+    flooded = flood_fill(basin_map, flood_point, 2, connectivity=1)
+    return np.sum(flooded == 2)
+
+def part1(X):
+    return score1(get_lowpoints(X)[0])
 def part2(X):
     _, points = get_lowpoints(X)
-    tot_flooded = []
-    for point in points:
-        basin_map = (X == 9).astype(int)
-        flooded = flood_fill(basin_map,point,2,connectivity=1)
-        tot_flooded.append(np.sum(flooded == 2))
-    return (np.prod(sorted(tot_flooded)[-3:])) #Select 3 largest and product_sum
-
-def score(lowests):
-    return sum(num +1 for num in lowests)
+    flood_areas = [get_flooded_area(X, point) for point in points]
+    return score2(flood_areas)
 
 def run_tests():
     inp = """2199943210
@@ -50,15 +54,14 @@ def run_tests():
 9899965678"""
     X = data_to_np_array(inp)
     lowests, points = get_lowpoints(X)
+    assert score1(lowests) == 15
     assert part2(X) == 1134
-    assert 15 == score(lowests)
 run_tests()
-
-def part1(X):
-    return score(get_lowpoints(X)[0])
 
 with open(Path("2021") / "day9" / "day9_input.txt") as f:
    X = data_to_np_array(f.read())
+
 run_tests()
+
 print(part1(X))
 print(part2(X))
