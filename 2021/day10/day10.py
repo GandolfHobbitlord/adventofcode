@@ -1,25 +1,24 @@
 from pathlib import Path
 import statistics
-openers = set('([<{')
-closers = set(')]>}')
 match = {
          ')' : '(',
          '>' : '<',
          ']' : '[',
          '}' : '{'}
 
-def get_invalid_char(inp):
+openers = set(match.values())
+
+def get_invalid_char(input):
     stack = []
-    for char in inp:
+    for char in input:
         if char in openers:
             stack.append(char)
-        elif char in closers:
-            if stack[-1] != match[char]:
+        else:
+            if stack.pop() != match[char]:
                 return char #invalid closer
-            stack.pop()
     return ''
 
-def _get_closers(chars):
+def find_matching_chars(chars):
     closers = {v : k for k, v in match.items()}
     v = [closers[char] for char in reversed(chars)]
     return ''.join(v)
@@ -29,32 +28,32 @@ def get_closers(inp):
     for char in inp:
         if char in openers:
             stack.append(char)
-        elif char in closers:
-            if stack[-1] != match[char]:
-                return char #invalid closer
-            stack.pop()
-    return _get_closers(stack)
+        else:
+            if stack.pop() != match[char]:
+                raise Exception('Corrupted line!')
+    return find_matching_chars(stack)
 
 def score2(chars):
-    match = {
+    scorer = {
         ')' : 1,
         ']' : 2,
         '}' : 3,
         '>' : 4}
-    score = 0
 
+    score = 0
     for char in chars:
-        score = score*5 + match[char]
+        score = score*5 + scorer[char]
     return score
 
 def score1(char):
-    match = {
+    scorer = {
         '' : 0,
          ')' : 3,
          ']' : 57,
          '}' : 1197,
          '>' : 25137}
-    return match[char]
+    return scorer[char]
+
 def run_tests():
     assert ''  == get_invalid_char('(((((((((())))))))))')
     assert '}' == get_invalid_char('{([(<{}[<>[]}>{[]{[(<()>')
@@ -72,9 +71,10 @@ def part1(lines):
 
 def part2(lines):
     incomplete = [line for line in lines if not get_invalid_char(line)]
-    print(len(incomplete))
     return statistics.median([score2(get_closers(line)) for line in incomplete])
+
 with open(Path("2021") / "day10" / "day10_input.txt") as f:
    lines = [line for line in f.read().splitlines()]
-print(part1(lines))
-print(part2(lines))
+
+print(f"Answer part 1 {part1(lines)}")
+print(f"Answer part 1 {part2(lines)}")
