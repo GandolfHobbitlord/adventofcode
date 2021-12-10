@@ -15,29 +15,15 @@ def score1(lowests):
 def score2(flood_areas):
     return np.prod(sorted(flood_areas)[-3:])
 
-def is_lowest(X,i,j):
-    val = X[i,j]
-    for ii in [i-1,i+1]:
-        if X[ii,j] <= val:
-            return False
-    for jj in [j-1,j+1]:
-        if X[i,jj] <= val:
-            return False
-    return True
-
 def get_lowpoints(X):
-    lowests = []
-    points = []
-    colmuns, rows = X.shape
-    for col in range(1,colmuns):
-        for row in range(1,rows):
-            if is_lowest(X,col,row):
-                lowests.append(X[col,row])
-                points.append((col,row)) #remove padding
+    low_mask = (X < np.roll(X,1,0)) & (X < np.roll(X,-1,0)) & (X < np.roll(X,1,1)) & (X < np.roll(X,-1,1))
+    lowests = X[low_mask]
+    points = np.argwhere(low_mask)
     return lowests, points
 
 def get_flooded_area(X, flood_point):
     basin_map = (X == 9).astype(int)
+    flood_point = tuple(flood_point)
     flooded = flood_fill(basin_map, flood_point, 2, connectivity=1)
     return np.sum(flooded == 2)
 
@@ -58,7 +44,6 @@ def run_tests():
     lowests, points = get_lowpoints(X)
     assert score1(lowests) == 15
     assert part2(X) == 1134
-run_tests()
 
 with open(Path("2021") / "day9" / "day9_input.txt") as f:
    X = data_to_np_array(f.read())
