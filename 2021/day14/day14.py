@@ -21,13 +21,14 @@ def step(string_template, rules, steps=1):
                 added_letter = rules[key]
                 next[key[0] + added_letter] += val
                 next[added_letter + key[1]] += val
-                chars.update(added_letter)
+                chars[added_letter] += val
             else:
                 next[key] += val
         template = next.copy()
     return next, chars
 def score(chars):
     return max(chars.values()) - min(chars.values())
+
 def run_tests():
     with open(Path("2021") / "day14" / "day14_test.txt") as f:
         template, rules = parse_data(f.read())
