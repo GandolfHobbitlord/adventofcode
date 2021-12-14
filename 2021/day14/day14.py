@@ -39,5 +39,20 @@ def run_tests():
     assert step2 == string2counter('NBCCNBBBCBHCB')
     assert chars2 == Counter('NBCCNBBBCBHCB')
     _, chars = step(template, rules, steps=10)
-    print(score(chars))
+    assert score(chars) == 1588
+
 run_tests()
+
+def part1(template, rules):
+    _, chars = step(template, rules, steps=10)
+    return score(chars)
+
+def part2(template, rules):
+    _, chars = step(template, rules, steps=40)
+    return score(chars)
+
+
+with open(Path("2021") / "day14" / "day14_input.txt") as f:
+    template, rules = parse_data(f.read())
+    print(part1(template,rules))
+    print(part2(template,rules))
