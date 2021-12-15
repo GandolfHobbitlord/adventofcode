@@ -26,7 +26,7 @@ def do_steps(string_template, rules, steps):
                 chars[added_letter] += val
             else:
                 next[key] += val
-        template = next.copy()
+        template = next
     return next, chars
 def score(chars):
     return max(chars.values()) - min(chars.values())
