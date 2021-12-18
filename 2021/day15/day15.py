@@ -41,8 +41,8 @@ def create_graph(mat):
                 q.append(neighbor)
         visited.add(vertice)
         q = sorted(q, key=lambda x: distances[x], reverse=True)
-    print(distances)
-    print(distances[-1,-1])
+    # print(distances)
+    return distances[-1,-1]
 
 def tile(mat):
     mat = np.concatenate([mat + i for i in range(5)],axis=0)
@@ -62,9 +62,14 @@ def run_tests():
 1293138521
 2311944581"""
     mat = to_matrix(input)
-    create_graph(mat)
+    assert create_graph(mat) == 40
+    assert create_graph(tile(mat.copy())) == 315
+    a = np.ones((1,1)) *8
+    print(a)
+    print(tile(a))
 run_tests()
 
 with open(Path("2021") / "day15" / "day15_input.txt") as f:
     dangers = to_matrix(f.read())
-    create_graph(dangers)
+    print(create_graph(dangers))
+    print(create_graph(tile(dangers.copy())))
