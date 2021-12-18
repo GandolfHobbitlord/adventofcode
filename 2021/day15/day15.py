@@ -1,9 +1,6 @@
 import numpy as np
 from pathlib import Path
 
-import time
-start_time = time.time()
-
 def to_matrix(inp):
     lines = [line for line in inp.splitlines()]
     mat=[]
@@ -36,14 +33,15 @@ def find_shortest_path(risk_levels):
         vertice = q.pop()
         if vertice in visited:
             continue
-        curr_dist = tot_risk[vertice]
-        for neighbor in get_neighbor(risk_levels,vertice):
-            new_distance = curr_dist + risk_levels[neighbor]
-            if new_distance < tot_risk[neighbor]:
-                tot_risk[neighbor] = new_distance
+        curr_risk = tot_risk[vertice]
+        for neighbor in get_neighbor(risk_levels, vertice):
+            new_risk = curr_risk + risk_levels[neighbor]
+            if new_risk < tot_risk[neighbor]:
+                tot_risk[neighbor] = new_risk
             if (neighbor not in visited):
                 q.append(neighbor)
         visited.add(vertice)
+        # TODO Use a heap, list is sorted each time but developer time < runtime
         q = sorted(q, key=lambda x: tot_risk[x], reverse=True)
     return tot_risk[finish_pos]
 
@@ -67,13 +65,14 @@ def run_tests():
     mat = to_matrix(input)
     assert find_shortest_path(mat) == 40
     assert find_shortest_path(tile(mat.copy())) == 315
-    a = np.ones((1,1)) *8
-    print(a)
-    print(tile(a))
 run_tests()
+
+def part1(dangers):
+    return find_shortest_path(dangers)
+def part2(dangers):
+    return find_shortest_path(tile(dangers.copy()))
 
 with open(Path("2021") / "day15" / "day15_input.txt") as f:
     dangers = to_matrix(f.read())
-    print(find_shortest_path(dangers))
-    print(find_shortest_path(tile(dangers.copy())))
-print("--- %s seconds ---" % (time.time() - start_time))
+print(f'Total danger part 1: {part1(dangers)}')
+print(f'Total danger part 2: {part2(dangers)}')
