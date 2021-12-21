@@ -36,7 +36,8 @@ def run(data, pos=0):
             val += data[pos:pos+4]
             pos += 4
             if is_end:
-                return pos, int(val,2)
+                ret_val = int(val,2)
+                break
     else:
         values = []
         len_id = data[pos]
@@ -57,23 +58,26 @@ def run(data, pos=0):
                 pos, val = run(data,pos)
                 values.append(val)
 
-        if typeID == 0:
-            return pos, sum(values)
-        elif typeID == 1:
-            return pos, math.prod(values)
-        elif typeID == 2:
-            return pos, min(values)
-        elif typeID == 3:
-            return pos, max(values)
-        elif typeID == 5:
-            assert len(values) == 2
-            return pos, int(values[0] > values[1])
-        elif typeID == 6:
-            assert len(values) == 2
-            return pos, int(values[0] < values[1])
-        elif typeID == 7:
-            assert len(values) == 2
-            return pos, int(values[0] == values[1])
+    if typeID == 0:
+        ret_val =  sum(values)
+    elif typeID == 1:
+        ret_val =  math.prod(values)
+    elif typeID == 2:
+        ret_val =  min(values)
+    elif typeID == 3:
+        ret_val =  max(values)
+    elif typeID == 4:
+        pass
+    elif typeID == 5:
+        assert len(values) == 2
+        ret_val =  int(values[0] > values[1])
+    elif typeID == 6:
+        assert len(values) == 2
+        ret_val =  int(values[0] < values[1])
+    elif typeID == 7:
+        assert len(values) == 2
+        ret_val =  int(values[0] == values[1])
+    return pos, ret_val
 
 
 def from_hex(line):
@@ -105,5 +109,5 @@ run_tests()
 with open(Path("2021") / "day16" / "day16_input.txt") as f:
     bin = from_hex(f.read())
 _, ret = run(bin)
-print(ret)
-print(version_sum)
+print(f'Total version sum: {version_sum}')
+print(f'Answer from hex: {ret}')
