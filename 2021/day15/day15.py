@@ -22,6 +22,7 @@ def get_neighbor(mat, pos):
         if in_range(mat,n):
             yield n
 
+# djikstra
 def find_shortest_path(risk_levels):
     tot_risk = np.full(risk_levels.shape, np.inf)
     q = []
