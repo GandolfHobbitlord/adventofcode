@@ -1,12 +1,9 @@
 from pathlib import Path
-from collections import Counter
-from collections import defaultdict
 import re
 import numpy as np
 
 def parse_line(line):
-    m = re.findall(r'(\d)', line)
-    return [int(x) for x in m]
+    return [int(x) for x in re.findall(r'(\d)', line)]
 
 def see_trees(arr):
     curr_largest = -1
@@ -40,7 +37,7 @@ def part1(data):
 
 dirs = [(-1,0), (1,0), (0,1), (0,-1)]
 
-def part_2(grid):
+def part2(grid):
     output = np.ones_like(grid)
     i,j = grid.shape
     for ii in range(i):
@@ -67,4 +64,4 @@ with open(Path("2022") / "day8" / "day8_input.txt") as f:
     data = np.array([parse_line(x) for x in f.read().splitlines()])
 
 part1(data)
-part_2(data)
+part2(data)
