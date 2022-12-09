@@ -26,10 +26,8 @@ def simulate_rope(number_of_knots):
             for i in range(0,len(knots)-1):
                 head_pos = knots[i][0], knots[i][1]
                 tail_pos = knots[i+1][0], knots[i+1][1]
-                h_x = head_pos[0]
-                h_y = head_pos[1]
-                t_x = tail_pos[0]
-                t_y = tail_pos[1]
+                h_x, h_y = head_pos
+                t_x, t_y = tail_pos
                 diff_x = h_x - t_x
                 diff_y = h_y - t_y
                 move_x = 0
@@ -43,10 +41,7 @@ def simulate_rope(number_of_knots):
                     move_y = np.clip(diff_y,-1,1)
                 tail_pos = (tail_pos[0] + move_x, tail_pos[1] + move_y)
                 knots[i+1] = tail_pos
-                # print('Tail',tail_pos)
             visited.add(knots[-1])
-        # print('Head',head_pos)
-        # print(tail_pos)
     print(len(visited))
 simulate_rope(2) # Why isn't head a knot :(
 simulate_rope(10)
