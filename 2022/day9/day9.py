@@ -1,17 +1,12 @@
 from pathlib import Path
 import re
-from collections import Counter
-from collections import defaultdict
-import itertools
 import numpy as np
+
 dirs = {'R': (1,0), 'U' :(0,1), 'D' :(0,-1),'L' :(-1,0),}
 def parse_line(line):
     m = re.match(r'(\w) (\d+)', line)
     dir, steps =  m.groups()
     return dir, int(steps)
-
-    lo, hi, char, password = m.groups()
-    return int(lo), int(hi), char, password
 
 with open(Path("2022") / "day9" / "day9_input.txt") as f:
     data = [parse_line(x) for x in f.read().splitlines()]
@@ -42,8 +37,7 @@ def simulate_rope(number_of_knots):
                 tail_pos = (tail_pos[0] + move_x, tail_pos[1] + move_y)
                 knots[i+1] = tail_pos
             visited.add(knots[-1])
-    print(len(visited))
-simulate_rope(2) # Why isn't head a knot :(
-simulate_rope(10)
+    return len(visited)
 
-# print(data)
+print(f"Answer part1 {simulate_rope(2)}") # Why isn't head a knot :(
+print(f"Answer part2 {simulate_rope(10)}")

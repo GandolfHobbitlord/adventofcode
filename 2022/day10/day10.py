@@ -1,37 +1,28 @@
 from pathlib import Path
-import re
-from collections import Counter
-from collections import defaultdict
-import itertools
 import numpy as np
-dirs = {'R': (1,0), 'U' :(0,1), 'D' :(0,-1),'L' :(-1,0),}
-def parse_line(line):
-    m = re.match(r'(\w) (\d+)', line)
-    dir, steps =  m.groups()
-    return dir, int(steps)
 
 with open(Path("2022") / "day10" / "day10_input.txt") as f:
     data = [x for x in f.read().splitlines()]
 
-print(data)
-cycle = 0
-start = 0
+def print_screen(arr):
+    for row in arr:
+        print(''.join(row))
+
 X = [1]
 for line in data:
     cmd = line.split()
-    if cmd[0] == 'noop':
-        cycle += 1
-        X.append(X[-1])
-        continue
-    elif cmd[0] == 'addx':
-        for _ in range(1):
-            X.append(X[-1])
-        print(cmd[1])
-        cycle += 1
+    X.append(X[-1])
+    if cmd[0] == 'addx':
         X.append(X[-1] + int(cmd[1]))
-    else:
-        print("ERROR")
-# X.pop(0)
-# print(X)
+
 get_signals = [20, 60, 100, 140, 180, 220]
-print(sum([X[x-1]*x for x in get_signals]))
+print(f'Answer part 1 {sum([X[x-1]*x for x in get_signals])}')
+
+#Part 2
+screen = np.full((6, 40), ' ')
+for cycle, sprit_pos in enumerate(X):
+    x = cycle % 40
+    y = cycle // 40
+    if sprit_pos -1  <= x and x <= sprit_pos + 1:
+        screen[y, x] = '#'
+print_screen(screen)
