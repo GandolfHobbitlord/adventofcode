@@ -31,7 +31,7 @@ class Monkey():
         while len(self.items):
             self.inspect += 1
             old = self.items.pop(0)
-            old = np.dtype('int64').type(old)
+            old = np.int64(old) # also took long time to figure out need to cast
             new = self.op(old)
             if part1:
                 new = new // 3

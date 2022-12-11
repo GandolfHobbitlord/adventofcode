@@ -1,27 +1,47 @@
-Monkey 0:
-  Starting items: 79, 98
-  Operation: new = old * 19
-  Test: divisible by 23
-    If true: throw to monkey 2
-    If false: throw to monkey 3
+Monkey([53, 89, 62, 57, 74, 51, 83, 97],
+  lambda: new : old * 3
+  lambda x : 0 == ( x % 13),
+    true_throw=1,
+    false_throw= 5)
 
-Monkey 1:
-  Starting items: 54, 65, 75, 74
-  Operation: new = old + 6
-  Test: divisible by 19
-    If true: throw to monkey 2
-    If false: throw to monkey 0
+Monkey([85, 94, 97, 92, 56],
+  lambda: new : old + 2
+  lambda x : 0 == ( x % 19),
+    true_throw=5,
+    false_throw= 2)
 
-Monkey 2:
-  Starting items: 79, 60, 97
-  Operation: new = old * old
-  Test: divisible by 13
-    If true: throw to monkey 1
-    If false: throw to monkey 3
+Monkey([86, 82, 82],
+  lambda: new : old + 1
+  lambda x : 0 == ( x % 11),
+    true_throw=3,
+    false_throw= 4)
 
-Monkey 3:
-  Starting items: 74
-  Operation: new = old + 3
-  Test: divisible by 17
-    If true: throw to monkey 0
-    If false: throw to monkey 1
+Monkey([94, 68],
+  lambda: new : old + 5
+  lambda x : 0 == ( x % 17),
+    true_throw=7,
+    false_throw= 6)
+
+Monkey([83, 62, 74, 58, 96, 68, 85],
+  lambda: new : old + 4
+  lambda x : 0 == ( x % 3),
+    true_throw=3,
+    false_throw= 6)
+
+Monkey([50, 68, 95, 82],
+  lambda: new : old + 8
+  lambda x : 0 == ( x % 7),
+    true_throw=2,
+    false_throw= 4)
+
+Monkey([75],
+  lambda: new : old * 7
+  lambda x : 0 == ( x % 5),
+    true_throw=7,
+    false_throw= 0)
+
+Monkey([92, 52, 85, 89, 68, 82],
+  lambda: new : old * old
+  lambda x : 0 == ( x % 2),
+    true_throw=0,
+    false_throw= 1)
