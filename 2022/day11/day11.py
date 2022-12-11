@@ -1,19 +1,9 @@
-import re
-from pathlib import Path
 import numpy as np
-from collections import Counter
-from collections import defaultdict
 
 # Longest time spent realising you need to change this when running test input
 # also these are primes which makes this worko otherwise need to find lowest common.
-common = np.product([13,
-19,
-11,
-17,
-3,
-7,
-5,
-2])
+common = np.product([13,19,11,17,3,7,5,2])
+
 class Monkey():
     def __init__(self,starting_items,op, test, true_throw, false_throw,):
         self.items = starting_items.copy()
@@ -21,14 +11,14 @@ class Monkey():
         self.true_throw = true_throw
         self.test = test
         self.op = op
-        self.active = 0
         self.inspect = 0
+
     def catch(self, item):
         self.items.append(item)
 
     def tick(self, part1= True):
         out = []
-        while len(self.items):
+        while self.items:
             self.inspect += 1
             old = self.items.pop(0)
             old = np.int64(old) # also took long time to figure out need to cast
@@ -54,25 +44,19 @@ def get_monkeys():
     return monkeys
 
 
-def part1():
+def day11(part1 = True):
+    if part1:
+        rounds = 20
+    else:
+        rounds = 10000
     monkeys = get_monkeys()
-    for round in range(20):
+    for _ in range(rounds):
         for m in monkeys:
-            throws = m.tick(part1=True)
+            throws = m.tick(part1)
             for item, target in throws:
                 monkeys[target].catch(item)
     a = sorted([m.inspect for m in monkeys])
     return a[-1] * a[-2]
 
-def part2():
-    monkeys = get_monkeys()
-    for round in range(10000):
-        for m in monkeys:
-            throws = m.tick(part1=False)
-            for item, target in throws:
-                monkeys[target].catch(item)
-    a = sorted([m.inspect for m in monkeys])
-    return a[-1] * a[-2]
-
-print(f"Answer Part 1: {part1()}")
-print(f"Answer Part 2: {part2()}")
+print(f"Answer Part 1: {day11()}")
+print(f"Answer Part 2: {day11(False)}")
