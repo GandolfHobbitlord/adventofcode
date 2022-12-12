@@ -4,6 +4,8 @@ import numpy as np
 from collections import Counter
 from collections import defaultdict
 a = {}
+
+#Spent 15 min writing djikstra and 50 min failing real data as i set S to a-1 and E to z + 1. Works for test not for real input
 enumerate('SabcdefghijklmnopqrstuvwxyzE')
 for i, letter in enumerate('abcdefghijklmnopqrstuvwxyz'):
     a[letter] = i
@@ -25,7 +27,7 @@ def get_neighbor(mat, pos):
         if in_range(mat,n):
             yield n
 
-def find_shortest_path(grid_levels, start_pos, finish_pos):
+def find_shortest_path(grid_levels, start_pos, finish_pos, shortest = np.inf):
     tot_risk = np.full(grid_levels.shape, np.inf)
     q = []
     q.append(start_pos)
@@ -37,16 +39,14 @@ def find_shortest_path(grid_levels, start_pos, finish_pos):
         if vertice in visited:
             continue
         curr_risk = tot_risk[vertice]
+        if curr_risk > shortest:
+            return np.inf
         for neighbor in get_neighbor(grid_levels, vertice):
             if grid_levels[neighbor] - grid_levels[vertice] > 1:
                 continue
-            # new_risk = curr_risk + grid_levels[neighbor]
-            new_risk = curr_risk + 1 #grid_levels[neighbor]
-
+            new_risk = curr_risk + 1
             if new_risk < tot_risk[neighbor]:
-                # tot_risk[neighbor] = new_risk
                 tot_risk[neighbor] = int(new_risk)
-
             if (neighbor not in visited):
                 q.append(neighbor)
         visited.add(vertice)
@@ -69,8 +69,12 @@ target = list(zip(*np.where(data == a['E'])))[0]
 start = list(zip(*np.where(data == a['S'])))[0]
 data[start] = a['a']
 data[target] = a['z']
-tars = []
-# for s in list(zip(*np.where(data == a['a']))):
-#     tars.append(find_shortest_path(data,start,target))
-
-
+print(f'Part 1: {find_shortest_path(data,start,target)}')
+smallest = np.inf
+for s in list(zip(*np.where(data == a['a']))):
+    # print(s)
+    distance = find_shortest_path(data,s,target)
+    # print(distance, smallest)
+    if distance < smallest:
+        smallest = distance
+print(f'Part 2: {smallest}')
