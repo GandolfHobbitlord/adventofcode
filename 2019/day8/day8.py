@@ -17,7 +17,7 @@ with open(os.path.join("day8","input_day8.txt")) as f:
     data = [int(i) for i in f.read().strip('\n')]
     image = np.array(data)
     image = np.reshape(image,(25,6,-1),order={'F'})
-    
+
     print("Answer part 1: {}".format(part1(image)))
     decoded_image = part2(image)
     plt.imshow(np.transpose(decoded_image), cmap='gray', vmin=0, vmax=2)

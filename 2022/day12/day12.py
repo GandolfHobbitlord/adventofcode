@@ -1,12 +1,10 @@
 import re
 from pathlib import Path
 import numpy as np
-from collections import Counter
-from collections import defaultdict
+
 a = {}
 
 #Spent 15 min writing djikstra and 50 min failing real data as i set S to a-1 and E to z + 1. Works for test not for real input
-enumerate('SabcdefghijklmnopqrstuvwxyzE')
 for i, letter in enumerate('abcdefghijklmnopqrstuvwxyz'):
     a[letter] = i
 a['S'] = -1
@@ -73,7 +71,7 @@ print(f'Part 1: {find_shortest_path(data,start,target)}')
 smallest = np.inf
 for s in list(zip(*np.where(data == a['a']))):
     # print(s)
-    distance = find_shortest_path(data,s,target)
+    distance = find_shortest_path(data,s,target,smallest)
     # print(distance, smallest)
     if distance < smallest:
         smallest = distance
