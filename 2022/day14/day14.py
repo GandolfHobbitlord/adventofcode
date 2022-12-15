@@ -36,12 +36,35 @@ with open(Path("2022") / "day14" / "day14_input.txt") as f:
 cave = create_map(data)
 x_sand, y_sand = (500,0)
 cnt = 0
-lowest = max([y for x,y in cave])
-print(lowest)
+# lowest = max([y for x,y in cave])
+# print(lowest)
+# while True:
+#     if y_sand > lowest:
+#         print(cnt)
+#         exit()
+#     if (x_sand, y_sand + 1) not in cave:
+#         y_sand += 1
+#     elif (x_sand - 1, y_sand + 1) not in cave:
+#         x_sand -= 1
+#         y_sand += 1
+#     elif (x_sand + 1, y_sand + 1) not in cave:
+#         x_sand += 1
+#         y_sand += 1
+#     else:
+#         cave.add((x_sand,y_sand))
+#         print(f"new sand at {x_sand,y_sand}")
+#         x_sand, y_sand = (500,0)
+#         cnt += 1
+print(data)
+
+lowest = max([y for x,y in cave]) + 2
+
 while True:
-    if y_sand > lowest:
-        print(cnt)
-        exit()
+    if y_sand == lowest - 1:
+        cave.add((x_sand,y_sand))
+        print(f"new sand at {x_sand,y_sand}")
+        x_sand, y_sand = (500,0)
+        cnt += 1
     if (x_sand, y_sand + 1) not in cave:
         y_sand += 1
     elif (x_sand - 1, y_sand + 1) not in cave:
@@ -51,8 +74,10 @@ while True:
         x_sand += 1
         y_sand += 1
     else:
+        cnt += 1
+        if y_sand == 0:
+            print(cnt)
+            exit()
         cave.add((x_sand,y_sand))
         print(f"new sand at {x_sand,y_sand}")
         x_sand, y_sand = (500,0)
-        cnt += 1
-print(data)
