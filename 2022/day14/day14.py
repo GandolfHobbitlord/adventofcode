@@ -18,53 +18,51 @@ with open(Path("2022") / "day14" / "day14_input.txt") as f:
 # with open(Path("2022") / "day14" / "day14_test.txt") as f:
     data = [parse_line(x) for x in f.read().splitlines()]
 
+def move_sand(pos, cave):
+    x_sand, y_sand = pos
+    if (x_sand, y_sand + 1) not in cave:
+        y_sand += 1
+    elif (x_sand - 1, y_sand + 1) not in cave:
+        x_sand -= 1
+        y_sand += 1
+    elif (x_sand + 1, y_sand + 1) not in cave:
+        x_sand += 1
+        y_sand += 1
+    return x_sand, y_sand
+
 def part1(data):
     cave = create_map(data)
-    x_sand, y_sand = (500,0)
+    new_pos = (500,0)
     cnt = 0
     lowest = max([y for x,y in cave])
     while True:
-        if y_sand > lowest:
-            # We are done
-            return cnt
-        if (x_sand, y_sand + 1) not in cave:
-            y_sand += 1
-        elif (x_sand - 1, y_sand + 1) not in cave:
-            x_sand -= 1
-            y_sand += 1
-        elif (x_sand + 1, y_sand + 1) not in cave:
-            x_sand += 1
-            y_sand += 1
-        else:
-            cave.add((x_sand,y_sand))
-            x_sand, y_sand = (500,0)
+        old_pos = new_pos
+        new_pos = move_sand(old_pos,cave)
+        if new_pos == old_pos:
+            cave.add(new_pos)
             cnt += 1
+            new_pos = 500,0
+        if new_pos[1] > lowest:
+            return cnt
 
 def part2(data):
     cave = create_map(data)
-    x_sand, y_sand = (500,0)
+    new_pos = (500,0)
     cnt = 0
-    lowest = max([y for x,y in cave]) + 2
+    lowest = max([y for _,y in cave]) + 2
     while True:
-        if y_sand == lowest - 1:
-            cave.add((x_sand,y_sand))
-            x_sand, y_sand = (500,0)
+        old_pos = new_pos
+        new_pos = move_sand(old_pos,cave)
+        if new_pos[1] == lowest - 1:
             cnt += 1
-        if (x_sand, y_sand + 1) not in cave:
-            y_sand += 1
-        elif (x_sand - 1, y_sand + 1) not in cave:
-            x_sand -= 1
-            y_sand += 1
-        elif (x_sand + 1, y_sand + 1) not in cave:
-            x_sand += 1
-            y_sand += 1
-        else:
+            cave.add(new_pos)
+            new_pos = (500,0)
+        elif new_pos == old_pos:
             cnt += 1
-            if y_sand == 0:
+            if new_pos[1] == 0:
                 return cnt
-            cave.add((x_sand,y_sand))
-            # print(f"new sand at {x_sand,y_sand}")
-            x_sand, y_sand = (500,0)
+            cave.add(new_pos)
+            new_pos = (500,0)
 
 print(f"Part 1 {part1(data)}")
 print(f"Part 2 {part2(data)}")
