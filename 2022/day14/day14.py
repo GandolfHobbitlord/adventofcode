@@ -53,11 +53,7 @@ def part2(data):
     while True:
         old_pos = new_pos
         new_pos = move_sand(old_pos,cave)
-        if new_pos[1] == lowest - 1:
-            cnt += 1
-            cave.add(new_pos)
-            new_pos = (500,0)
-        elif new_pos == old_pos:
+        if new_pos[1] == lowest - 1 or new_pos == old_pos:
             cnt += 1
             if new_pos[1] == 0:
                 return cnt
