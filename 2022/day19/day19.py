@@ -1,6 +1,5 @@
 import re
 from pathlib import Path
-from symbol import factor
 import numpy as np
 from collections import Counter
 from collections import defaultdict
@@ -47,45 +46,60 @@ with open(Path("2022") / "day19" / "day19_input.txt") as f:
     factory = [parse_line(x) for x in f.read().splitlines()][0]
 
 
-bestest = []
-def simulate(stock, bots, factory, current_time, end_time):
-    for minutes in range(current_time, end_time):
+bestest = [0]
+
+def abort(stock,bots,factory,current_time,end_time):
+    time_left = end_time - current_time
+    geods = stock['geod']
+    geod_bots = bots['geod']
+    perfect = geods + time_left * (geod_bots + geod_bots+time_left) / 2
+    if perfect < max(bestest):
+        return True
+    return False
+
+def simulate(_stock, _bots, _factory, _current_time, _end_time):
+    q = [(_stock, _bots, _factory,_current_time,_end_time)]
+
+    while(q):
+        stock,bots,factory,current_time, end_time = q.pop(0)
+        if abort(stock,bots,factory,current_time,end_time):
+            continue
         # print(f'Minute: {minutes}')
         if able_to_build(stock, factory.ore_robot):
             new_stock = pay(stock, factory.ore_robot)
             new_stock = collect(bots, new_stock)
             new_bots = bots.copy()
             new_bots['ore'] += 1
-            simulate(new_stock,new_bots,factory,minutes+1,end_time)
-        elif able_to_build(stock, factory.clay_robot):
+            q.append((new_stock,new_bots,factory,current_time+1,end_time))
+        if able_to_build(stock, factory.clay_robot):
             new_stock = pay(stock, factory.clay_robot)
             new_stock = collect(bots, new_stock)
             new_bots = bots.copy()
             new_bots['clay'] += 1
             # print('clay bot build')
-            simulate(new_stock,new_bots,factory,minutes+1,end_time)
-        elif able_to_build(stock, factory.obsidian_robot):
+            q.append((new_stock,new_bots,factory,current_time+1,end_time))
+        if able_to_build(stock, factory.obsidian_robot):
             new_stock = pay(stock, factory.obsidian_robot)
             new_stock = collect(bots, new_stock)
             new_bots = bots.copy()
             new_bots['obsidian'] += 1
             # print('obsidian bot build')
-            simulate(new_stock,new_bots,factory,minutes+1,end_time)
-        elif able_to_build(stock, factory.geod_robot):
+            q.append((new_stock,new_bots,factory,current_time+1,end_time))
+        if able_to_build(stock, factory.geod_robot):
             new_stock = pay(stock, factory.geod_robot)
             new_stock = collect(bots, new_stock)
             new_bots = bots.copy()
             new_bots['geod'] += 1
-            simulate(new_stock,new_bots,factory,minutes+1,end_time)
+            q.append((new_stock,new_bots,factory,current_time+1,end_time))
             # print('clay bot build')
+        if current_time + 1 < end_time:
+            new_stock = collect(bots, stock)
+            new_bots = bots.copy()
+            q.append((new_stock,new_bots,factory,current_time+1,end_time))
         else:
-            for type, num in bots.items():
-                stock[type] += num
-                if num != 0:
-                    # print(f"{num} {type}-collecting robot collects {num} {type}; you now have {stock[type]} {type}.")
-    bestest.append(stock['geod'])
+            bestest.append(stock['geod'])
 
 stock  = {"ore" : 0, "clay" : 0, "obsidian" :0, "geod" : 0}
 bots  = {"ore" : 1, "clay" : 0, "obsidian" : 0, "geod" : 0}
-simulate(stock, bots, factory, current_time=0, end_time=24)
+simulate(stock, bots, factory, _current_time=0, _end_time=6)
 print(max(bestest))
