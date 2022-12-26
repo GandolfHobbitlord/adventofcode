@@ -86,26 +86,38 @@ blizz, walls = parse_data(data)
 print(f'{walls=}')
 print(f'{blizz=}')
 
-q = []
+new_q = set()
 current_step = 0
-q.append((1,0,1))
+new_q.add((1,0))
 # print_map(blizz,walls,q)
+target_number  = 0
 for i in range(1000000000):
-    # print(q)
-    # print(i)
-    if q[0][2] != current_step:
-        # print_map(blizz,walls,q)
-        current_step = q[0][2]
-        print(q[0][2])
-        blizz = advance_blizz(blizz,walls)
-    pos_x, pos_y, steps = q.pop(0)
-    blizz_pos = list([pos for pos, dir in blizz])
-    neighbors = [(pos_x,pos_y), (pos_x-1,pos_y), (pos_x+1,pos_y), (pos_x,pos_y-1), (pos_x,pos_y+1)]
-    for n in neighbors:
-        if n not in walls and n not in blizz_pos and n[1] >= 0:
-            item = (n[0],n[1], steps+1)
-            if item not in q:
-                q.append(item)
-            if n == (RIGHT_WALL-1,BOTTOM_WALL):
-                print('Found pos, steps', steps)
-                exit()
+    print(i)
+    blizz = advance_blizz(blizz,walls)
+    q = new_q.copy()
+    new_q = set()
+    while q:
+        pos_x, pos_y = q.pop()
+        blizz_pos = list([pos for pos, dir in blizz])
+        neighbors = [(pos_x,pos_y), (pos_x-1,pos_y), (pos_x+1,pos_y), (pos_x,pos_y-1), (pos_x,pos_y+1)]
+        for n in neighbors:
+            if n not in walls and n not in blizz_pos and n[1] >= 0:
+                new_q.add(n)
+                if target_number == 0:
+                    if n == (RIGHT_WALL-1,BOTTOM_WALL):
+                        print('Found pos, ', i+1)
+                        new_q = set()
+                        new_q.add(n)
+                        q.clear()
+                        target_number +=1
+                if target_number == 1:
+                    if n == (1,0):
+                        print('Found pos, ', i+1)
+                        new_q = set()
+                        new_q.add(n)
+                        q.clear()
+                        target_number +=1
+                if target_number == 2:
+                    if n == (RIGHT_WALL-1,BOTTOM_WALL):
+                        print('Found pos, ', i+1)
+                        exit()
