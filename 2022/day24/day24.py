@@ -1,21 +1,15 @@
-import re
 from pathlib import Path
 import numpy as np
 
 blizz_dirs = {'>' : (1,0), '<' : (-1,0), 'v' : (0,1), '^' : (0,-1)}
 dir_map = {v: k for (k, v) in blizz_dirs.items()}
+
 with open(Path("2022") / "day24" / "day24_input.txt") as f:
-# with open(Path("2022") / "day24" / "day24_test.txt") as f:
     data = [list(x) for x in f.read().splitlines()]
-visited_pos = set()
-data = np.array(data)
 
 RIGHT_WALL = len(data[0]) -1
 BOTTOM_WALL = len(data) -1
-print(BOTTOM_WALL)
-print(BOTTOM_WALL)
 
-cols = 0
 def parse_data(data):
     rows = len(data)
     cols = len(data[0])
@@ -26,7 +20,6 @@ def parse_data(data):
         for y in range(rows):
             if data[y][x] in blizz_dirs:
                 dir = blizz_dirs[data[y][x]]
-                print(x,y, dir)
                 blizzards.add(((x,y), dir))
             elif data[y][x] == '#':
                 walls.add((x,y))
@@ -69,55 +62,37 @@ def print_map(blizz,walls,q):
             map[cord] = '2'
         else:
             map[cord] = str(int(map[cord]) +1)
-
-    # print(map)
-    for pos_x, pos_y, steps in q:
+    for pos_x, pos_y in q:
         pos = (pos_y,pos_x)
         if map[pos] != '.':
             raise NameError(f'DANGER DANGER {pos_x,pos_y}')
         map[pos] = 'X'
 
     print(map)
-    # print("\n")
-
-
 
 blizz, walls = parse_data(data)
-print(f'{walls=}')
-print(f'{blizz=}')
-
 new_q = set()
 current_step = 0
 new_q.add((1,0))
-# print_map(blizz,walls,q)
 target_number  = 0
+targets = [(RIGHT_WALL-1,BOTTOM_WALL), (1,0), (RIGHT_WALL-1,BOTTOM_WALL)]
+
 for i in range(1000000000):
-    print(i)
+    if targets[target_number] in new_q:
+        print(f'Found pos after {i} steps ')
+        new_q = set([targets[target_number]])
+        target_number +=1
+        if target_number > 2:
+            exit()
+
     blizz = advance_blizz(blizz,walls)
     q = new_q.copy()
     new_q = set()
+    blizz_pos = set([pos for pos, dir in blizz])
+    occupied = walls | blizz_pos
     while q:
         pos_x, pos_y = q.pop()
-        blizz_pos = list([pos for pos, dir in blizz])
         neighbors = [(pos_x,pos_y), (pos_x-1,pos_y), (pos_x+1,pos_y), (pos_x,pos_y-1), (pos_x,pos_y+1)]
         for n in neighbors:
-            if n not in walls and n not in blizz_pos and n[1] >= 0:
+            if n not in occupied and n[1] >= 0:
                 new_q.add(n)
-                if target_number == 0:
-                    if n == (RIGHT_WALL-1,BOTTOM_WALL):
-                        print('Found pos, ', i+1)
-                        new_q = set()
-                        new_q.add(n)
-                        q.clear()
-                        target_number +=1
-                if target_number == 1:
-                    if n == (1,0):
-                        print('Found pos, ', i+1)
-                        new_q = set()
-                        new_q.add(n)
-                        q.clear()
-                        target_number +=1
-                if target_number == 2:
-                    if n == (RIGHT_WALL-1,BOTTOM_WALL):
-                        print('Found pos, ', i+1)
-                        exit()
