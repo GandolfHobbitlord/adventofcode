@@ -1,11 +1,11 @@
 import numpy as np
-# times =    [7,  15,   30]
-# distances = [  9,  40,  200]
+times =    [71530]
+distances = [ 940200]
 
-times = [40,81,77,72]
-distances = [219,1012,1365,1089]
+times = [40817772]
+distances = [219101213651089]
 
-ans = []
+ans = [1]
 for race_time, distance in zip(times, distances):
     x = np.array(range(race_time))
     traveled = x*(race_time-x)
