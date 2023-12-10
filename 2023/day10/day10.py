@@ -1,7 +1,6 @@
 from pathlib import Path
-import numpy as np
-import re
 from collections import defaultdict
+
 N = (0,-1)
 W = (-1,0)
 E = (1,0)
@@ -26,7 +25,7 @@ def parse_map(map):
             out[(x,y)] = char
     return out,start
 
-def get_possible(data,pos):
+def get_possible_moves(data,pos):
     new_pos = []
     for d in chars[data[pos]]:
         a = (pos[0] + d[0], pos[1] + d[1])
@@ -37,28 +36,36 @@ def get_possible(data,pos):
 # with open(Path("2023") / "day10" / "day10_input.txt") as f:
 with open(Path("2023") / "day10" / "day10_test.txt") as f:
     data,start = parse_map(f.read())
-print(start)
 
+# Get start dir as we don't know which way we can go from "S"
 for d in dirs:
     pos = (start[0] + d[0], start[1] + d[1])
-    print('curr', pos)
-    if start in get_possible(data,pos):
+    if start in get_possible_moves(data,pos):
         start_dir = pos
         break
 
-visited = [start,start_dir]
+visited = [start]
 steps = 1
-pos = start_dir
 next_pos = [start_dir]
 
 while next_pos:
-    pos = next_pos.pop()
+    pos = next_pos.pop() #No need for array but it was quick to do
     visited.append(pos)
-    for new_pos in get_possible(data,pos):
+    for new_pos in get_possible_moves(data,pos):
         if new_pos not in visited:
             steps += 1
             next_pos.append(new_pos)
 
-print('Tot steps', (steps + 1) // 2)
-    # for entrance in chars[data[pos]]:
-    #     print(entrance)
+print(f'Answer part 1: {(steps+1) // 2}')
+
+# Spent a long time until i realised it just asked for the area of the polygon of all the points
+# after some googling found shoelace formula
+visited.append(start)
+area = 0
+for (x0,y0), (x1,y1) in zip(visited,visited[1:]):
+    area += (y0 + y1+2)*(x1-x0) / 2
+area = int(abs(area))
+
+# Was then stumped and had to get a tip about "Pick's formula" to get all the way. TIL
+i = area - (len(visited) -1)/ 2 + 1
+print(f'Answer part 2: {int(i)}')
