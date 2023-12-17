@@ -7,12 +7,11 @@ def parse_line(line):
     lo, hi, char, password = m.groups()
     return int(lo), int(hi), char, password
 
-# with open(Path("2023") / "day14" / "day14_input.txt") as f:
-with open(Path("2023") / "day14" / "day14_test.txt") as f:
+with open(Path("2023") / "day14" / "day14_input.txt") as f:
+# with open(Path("2023") / "day14" / "day14_test.txt") as f:
     data = [list(line) for line in f.read().split('\n')]
     # data = [parse_line(line) for line in f.read().split('\n')]
 
-# print(data)
 def move_north(data):
     data = np.array(data)
     moved = np.zeros_like(data,dtype='str')
@@ -35,19 +34,32 @@ def calc_load(data):
     m = len(data)
     for row_nr, row in enumerate(data):
         stones = np.sum(row == 'O')
-        # print(stones)
         load += (m-row_nr) * stones
     return load
-moved_data = move_north(data)
-print(calc_load(moved_data))
+
 def cycle(data):
     m = data.copy()
     for _ in range(4):
         m = np.rot90(move_north(m),3)
-    print(m)
     return m
-# for i in range(2):
 
-# print(moved_data)
-# print('------')
-# print(moved)
+part1 = move_north(data)
+print(f'Answer part 1: {calc_load(part1)}')
+
+seen_figure = {}
+i = 0
+max_cycles = 1000000000
+found_loop = False
+while i < 1000000000:
+    data = cycle(data)
+    i += 1
+    key = data.tobytes()
+    if key in seen_figure and found_loop == False:
+        print(f'found_loop {i} {seen_figure[key]}')
+        cycle_len = i - seen_figure[key]
+        i += cycle_len * ((max_cycles - i) // cycle_len)
+        found_loop = True
+    else:
+        seen_figure[key] = i
+
+print(f'Answer Part 2: {calc_load(data)}')
