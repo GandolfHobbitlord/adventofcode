@@ -1,6 +1,6 @@
 from pathlib import Path
 import numpy as np
-import re
+
 dirmap = {
 'U' : (0,-1),
 'L' : (-1,0),
@@ -47,31 +47,15 @@ for _, _, hex in data:
     val = int(hex[:-1],16)
     print(dir,val)
     for i in range(val):
-        x,y  = dirmap[dir] #mon dieu
+        x,y  = dirmap[dir]
         pos = (pos[0] + x, pos[1] + y)
         dug.add(pos)
     pts.append(pos)
-        # print(pos)
-# print(dug)
-# # exit()
-# print(dug)
-# print(print_dig(dug))
 
 #Pick strikes again!
-xx = np.array([x for x,y in pts])
-yy = np.array([y for x,y in pts])
 area = get_area(pts + [pts[0]])
-# area2 = PolyArea(xx,yy)
-# print(area1,area2)
 b = len(dug)
-print(f'{b=}')
 internal = area - len(dug)/2 + 1
 tot_points = internal + len(dug)
 
 print(f'{tot_points=}')
-# print(f'{PolyArea(xx,yy)=}')
-# print(f'{area=}')
-# d=fill(dug)
-# print_dig(d)
-# print(list(neighbors((1,1))))
-# print(len(d))
