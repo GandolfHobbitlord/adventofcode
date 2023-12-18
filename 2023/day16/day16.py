@@ -28,11 +28,6 @@ change_dir = {
     ('.', E)  : [E],
     ('.', S)  : [S],
 }
-def parse_line(line):
-    m = re.match(r'(\d+)-(\d+) (\w): (\w+)', line)
-    lo, hi, char, password = m.groups()
-    return int(lo), int(hi), char, password
-
 
 with open(Path("2023") / "day16" / "day16_input.txt") as f:
 # with open(Path("2023") / "day16" / "day16_test.txt") as f:
@@ -47,22 +42,39 @@ def is_valid_pos(pos):
         return False
     return True
 
-energized = np.zeros_like(data,dtype=int)
-# energized[:] = '.'
-beams = [((0,0),E)]
-seen = set()
-while beams:
-    print(beams)
-    (x,y), dir = beams.pop()
-    energized[y,x] = energized[y,x] + 1
-    val = data[y,x]
-    for new_dir in change_dir[(val,dir)]:
-        new_pos = (x+new_dir[0], y+new_dir[1])
-        if is_valid_pos(new_pos) and (new_pos,new_dir) not in seen:
-            seen.add((new_pos,new_dir))
-            beams.append((new_pos,new_dir))
-        print(new_pos)
-    print(energized)
-print(data)
-print(energized)
-print(np.sum(energized > 0))
+def calc_energized(data,beam):
+    beams = [beam]
+    energized = np.zeros_like(data,dtype=int)
+    # energized[:] = '.'
+    seen = set()
+    while beams:
+        # print(beams)
+        (x,y), dir = beams.pop()
+        energized[y,x] = energized[y,x] + 1
+        val = data[y,x]
+        for new_dir in change_dir[(val,dir)]:
+            new_pos = (x+new_dir[0], y+new_dir[1])
+            if is_valid_pos(new_pos) and (new_pos,new_dir) not in seen:
+                seen.add((new_pos,new_dir))
+                beams.append((new_pos,new_dir))
+    tot_energized = np.sum(energized > 0)
+    return tot_energized
+
+part1 = calc_energized(data,((0,0),E))
+print(f'Answer Part 1: {part1}')
+max_y, max_x = data.shape
+starts = []
+for col_pos in range(max_x):
+    starts.append(((col_pos, 0), S))
+    starts.append(((col_pos, max_y-1), N))
+
+for row_pos in range(max_y):
+    starts.append(((0, row_pos), E))
+    starts.append(((max_x-1, row_pos), W))
+
+best = 0
+for beam in starts:
+    val = calc_energized(data,beam)
+    if val > best:
+        best = val
+print(f'Answer Part 2: {best}')
