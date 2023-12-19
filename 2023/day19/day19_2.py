@@ -1,6 +1,4 @@
 from pathlib import Path
-import numpy as np
-import re
 from copy import deepcopy
 
 # This years dirty eval!
@@ -14,12 +12,11 @@ def parse_workflow(wf):
     rules = rest[:-1].split(',')
     out_rules = []
     for rule in rules[:-1]:
-
         e, dest = rule.split(':')
         cat = e[0]
         operator = e[1]
         num = int(e[2:])
-        out_rules.append((cat, operator, num,dest))
+        out_rules.append((cat, operator, num, dest))
     out_rules.append(rules[-1])
     return key, out_rules
 
@@ -30,27 +27,27 @@ def parse_workflow(wf):
 def get_next(part,rules):
     possible_out = []
     for cat, operator, num, dest in rules[:-1]:
-        mini, maxi = part[cat]
+        lo,  hi = part[cat]
         if operator =='<':
-            new_max = min(maxi, num-1)
-            if new_max > mini:
+            new_hi = min(hi, num-1)
+            if new_hi > lo:
                 new_part = deepcopy(part)
-                new_part[cat] = (mini,new_max)
+                new_part[cat] = (lo,new_hi)
                 possible_out.append((dest,new_part))
-            mini = num
+            lo = num
         elif operator == '>':
-            new_min = max(mini, num+1)
-            if new_min < maxi:
+            new_lo = max(lo, num+1)
+            if new_lo <  hi:
                 new_part = deepcopy(part)
-                new_part[cat] = (new_min,maxi)
+                new_part[cat] = (new_lo, hi)
                 possible_out.append((dest,new_part))
-            maxi = num
-        if mini < maxi:
-            part[cat] = (mini,maxi)
+            hi = num
+        #Can we keep going?
+        if lo <  hi:
+            part[cat] = (lo, hi)
         else:
             return possible_out
-    if maxi > mini:
-        possible_out.append((rules[-1], deepcopy(part)))
+    possible_out.append((rules[-1], part))
     return possible_out
 
 with open(Path("2023") / "day19" / "day19_input.txt") as f:
@@ -58,35 +55,25 @@ with open(Path("2023") / "day19" / "day19_input.txt") as f:
     wfs, parts  = f.read().split('\n\n')
 parts = [parse_part(part) for part in parts.splitlines()]
 wfs = dict([parse_workflow(wf) for wf in wfs.splitlines()])
-print(wfs)
-ans = 0
+
 part = {c: (1,4000) for c in 'xmas'}
-print(part)
-minimax = [('in' , part)]
+parts = [('in' , part)]
 passed = []
-while minimax:
-    dest, part = minimax.pop()
-    new_possible = get_next(part,wfs[dest])
-    for key, val in new_possible:
-        if key == 'A':
-            passed.append(val)
-        elif key == 'R':
-            continue
-        else:
-            minimax.append((key,val))
-    print('hello')
+while parts:
+    dest, part = parts.pop()
+    if dest == 'A':
+        passed.append(part)
+    elif dest == 'R':
+        continue
+    else:
+        new_possible = get_next(part,wfs[dest])
+        parts += new_possible
 
-print(passed)
-# vals = [minimax]
-p2 = 0
+ans = 0
 for part in passed:
-    v = 1
+    comb = 1
     for lo, hi in part.values():
-        v *= hi - lo + 1
-    p2 += v
-print(p2)
-# while vals:
-#     key, mm = vals.pop()
-#     get_next(mm,wfs[key])
+        comb *= hi - lo + 1
+    ans += comb
 
-# print(ans)
+print(f'Answer part 2: {ans}')

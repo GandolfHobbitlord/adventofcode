@@ -1,6 +1,4 @@
 from pathlib import Path
-import numpy as np
-import re
 
 # This years dirty eval!
 def parse_part(part):
@@ -9,13 +7,13 @@ def parse_part(part):
     return eval(part)
 
 def parse_workflow(wf):
-
     key, rest = wf.split('{')
     rules = rest[:-1].split(',')
     out_rules = []
     for rule in rules[:-1]:
         e, dest = rule.split(':')
         val = e[0]
+        #Prepare for more eval fun!
         e = e.replace(f'{val}',f'part["{val}"]')
         out_rules.append((e,dest))
     out_rules.append(('True', rules[-1]))
