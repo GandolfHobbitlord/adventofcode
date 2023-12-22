@@ -55,6 +55,7 @@ def is_valid_part2(neighbor,vertice,dir_str):
             return ""
         return d
 
+#modified djikstra
 def find_shortest_path(grid_levels, start_pos, finish_pos):
     q = []
     dct = defaultdict(lambda: float('inf'))
@@ -64,7 +65,7 @@ def find_shortest_path(grid_levels, start_pos, finish_pos):
     heapq.heapify(q)
     while q:
         curr_heat ,dir_str, vertice, curr_path = heapq.heappop(q)
-        if vertice == finish_pos and len(dir_str) > 3:
+        if vertice == finish_pos:
             print('found pos', finish_pos)
             print(curr_path)
             print(dct[(finish_pos,dir_str)])
@@ -72,7 +73,7 @@ def find_shortest_path(grid_levels, start_pos, finish_pos):
         if (vertice,dir_str) in visited:
             continue
         for neighbor in get_neighbor(grid_levels, vertice):
-            neighbor_dirstr = is_valid_part2(neighbor,vertice,dir_str)
+            neighbor_dirstr = is_valid_part1(neighbor,vertice,dir_str)
             if neighbor_dirstr == '':
                 continue
             new_heat = curr_heat + grid_levels[neighbor]
