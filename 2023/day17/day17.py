@@ -1,6 +1,7 @@
 from pathlib import Path
 import numpy as np
 import re
+import heapq
 from collections import defaultdict
 def in_range(mat,n):
     bounds = mat.shape
@@ -23,34 +24,56 @@ def get_neighbor(mat, pos):
         if in_range(mat,n):
             yield n
 
+def is_valid_part1(neighbor,vertice,dir_str):
+    d = get_dir(neighbor,vertice)
+    if dir_str != '' and backward[d] == dir_str[-1]:
+        return ''
+    if dir_str.startswith(d):
+        neighbor_dirstr = dir_str + d
+    else:
+        neighbor_dirstr = d
+    if len(neighbor_dirstr) > 3:
+        return ""
+    return neighbor_dirstr
+
+def is_valid_part2(neighbor,vertice,dir_str):
+    d = get_dir(neighbor,vertice)
+    if dir_str == '':
+        return d
+    if backward[d] == dir_str[-1]:
+        return ''
+    if len(dir_str) < 4:
+        if dir_str.startswith(d):
+            return dir_str + d
+        return ""
+    elif len(dir_str) < 10:
+        if dir_str.startswith(d):
+            return dir_str + d
+        return d
+    else:
+        if dir_str.startswith(d):
+            return ""
+        return d
+
 def find_shortest_path(grid_levels, start_pos, finish_pos):
-    tot_risk = np.full(grid_levels.shape, np.inf)
     q = []
     dct = defaultdict(lambda: float('inf'))
     dct[(start_pos,"")] = 0
-    q.append((start_pos,"",0, []))
+    q.append((0,"",start_pos, []))
     visited = set()
-    path = defaultdict(list)
+    heapq.heapify(q)
     while q:
-        vertice ,dir_str, curr_heat, curr_path = q.pop()
-        if vertice == finish_pos:
+        curr_heat ,dir_str, vertice, curr_path = heapq.heappop(q)
+        if vertice == finish_pos and len(dir_str) > 3:
             print('found pos', finish_pos)
+            print(curr_path)
             print(dct[(finish_pos,dir_str)])
             exit()
-            print(tot_risk[finish_pos])
-        # print(visited)
         if (vertice,dir_str) in visited:
             continue
         for neighbor in get_neighbor(grid_levels, vertice):
-            d = get_dir(neighbor,vertice)
-            if dir_str:
-                if backward[d] == dir_str[-1]:
-                    continue
-            if dir_str.startswith(d):
-                neighbor_dirstr = dir_str + d
-            else:
-                neighbor_dirstr = d
-            if len(neighbor_dirstr) > 3:
+            neighbor_dirstr = is_valid_part2(neighbor,vertice,dir_str)
+            if neighbor_dirstr == '':
                 continue
             new_heat = curr_heat + grid_levels[neighbor]
             if new_heat < dct[(neighbor,neighbor_dirstr)]:
@@ -58,21 +81,9 @@ def find_shortest_path(grid_levels, start_pos, finish_pos):
             if ((neighbor,neighbor_dirstr) not in visited):
                 cp = curr_path.copy()
                 cp.append(vertice)
-                q.append((neighbor,neighbor_dirstr, new_heat,cp))
+                heapq.heappush(q,(new_heat,neighbor_dirstr, neighbor, cp))
         visited.add((vertice,dir_str))
-        # print(len(visited))
-
-        path[vertice] = curr_path
-        # TODO Use a heap, list is sorted each time but developer time < runtime
-        q = sorted(q, key=lambda x: x[2], reverse=True)
-    print(tot_risk.astype(int))
-
-
-    index = tuple(np.array(list(zip(*path[finish_pos]))))
-    grid_levels[index] = -1
-    print(grid_levels)
-    print([heat for (pos, _), heat in dct.items() if finish_pos == pos])
-    return tot_risk[finish_pos]
+    raise RuntimeError('Uh oh, no path to object')
 
 def parse_line(line):
     m = re.match(r'(\d+)-(\d+) (\w): (\w+)', line)
