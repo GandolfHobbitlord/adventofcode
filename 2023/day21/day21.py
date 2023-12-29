@@ -28,8 +28,8 @@ with open(Path("2023") / "day21" / "day21_input.txt") as f:
 
 start = np.where(data=='S')
 row, col = data.shape
-num_tiles = 1
-positions = set([(start[0][0] + row * (num_tiles // 2), start[1][0] + row * (num_tiles // 2))])
+num_tiles = 100
+positions = set([(start[0][0] + row * (num_tiles // 2), start[1][0] + col * (num_tiles // 2))])
 data = np.tile(data,(num_tiles,num_tiles))
 
 data[data=='S'] = '.'
@@ -40,10 +40,14 @@ def print_map(mat, pos):
     for row in m:
         print(''.join(r for r in row))
     # print(m)
+
 print(positions)
 data[start] = '.'
 print(positions)
-max_steps = 5
+print(row)
+# exit()
+remainder = 26501365 % row
+max_steps = remainder + row * 2
 steps = range(max_steps)
 ans = []
 seen = set()
@@ -62,9 +66,19 @@ for step in steps:
     ans.append(len(positions))
     seen_len.append(len(seen))
 s = start[0][0]
-print_map(data,seen)
-print((data[s-max_steps:s+max_steps+1, s-max_steps:s+max_steps+1]))
-print(seen_len)
-print(ans)
+# print_map(data,seen)
+# print((data[s-max_steps:s+max_steps+1, s-max_steps:s+max_steps+1]))
+print(seen_len[-1])
+print(ans[-1])
 plt.plot(steps,ans)
 plt.show()
+
+# Part2
+row = 131
+rem = 65
+xx = [rem, rem+row, rem+row*2]
+yy = [3730,33366,92548]
+p = np.polyfit(xx,yy,2)
+# plt.plot(xx,yy)
+# plt.plot(np.linspace(1, 131+row*2),np.polyval(p,np.linspace(1, 131+row*2)))
+print(np.polyval(p,26501365))
