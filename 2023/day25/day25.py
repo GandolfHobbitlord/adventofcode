@@ -58,14 +58,14 @@ def get_subgraphs(edges,vertices):
 #This worked surprisingly well :O
 # Just find shortest paths betwen random vertices. The minimal cut we should pass most times (hopefully)
 # After doing it a few times, remove that edge most commonly used and do the same thing again
-samples = 1000
+samples = 100
 for cut_nr in range(3):
     print(cut_nr)
     count = Counter()
     sample = 0
     # for start, goal in combinations(vertices,2):
     for sample in range(samples):
-        start, goal = random.sample(vertices,2)
+        start, goal = random.sample(list(vertices),2)
 
         visited = djikstra(edges,vertices, start, goal)
         count.update(visited)

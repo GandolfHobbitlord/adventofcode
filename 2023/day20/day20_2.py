@@ -97,7 +97,7 @@ def graph(modules):
     nx.draw_networkx_edges(G, pos, edgelist=black_edges, arrows=True)
     plt.show()
 
-# graph(modules)
+graph(modules)
 
 press = 0
 #these four modules come from separate parts. All need to be False at the same time
