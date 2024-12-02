@@ -25,11 +25,11 @@ def solve(data,part2=False):
                     ans += 1
                     break
     return ans
-with open(Path("2024") / "day2" / "day2_input.txt") as f:
-# with open(Path("2024") / "day2" / "day2_test.txt") as f:
+# with open(Path("2024") / "day2" / "day2_input.txt") as f:
+with open(Path("2024") / "day2" / "day2_test.txt") as f:
     data = [parse_line(line) for line in f.read().split('\n')]
     ans = 0
 
-print(solve(data))
-print(solve(data,part2=True))
+print(f'Answer part 1: {solve(data)}')
+print(f'Answer part 2: {solve(data,part2=True)}')
 
