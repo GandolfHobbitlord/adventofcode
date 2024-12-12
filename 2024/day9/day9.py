@@ -10,8 +10,8 @@ def parse_line(line):
     lo, hi, char, password = m.groups()
     return int(lo), int(hi), char, password
 
-with open(Path("2024") / "day9" / "day9_input.txt") as f:
-# with open(Path("2024") / "day9" / "day9_test.txt") as f:
+# with open(Path("2024") / "day9" / "day9_input.txt") as f:
+with open(Path("2024") / "day9" / "day9_test.txt") as f:
     data = [int(c) for c in f.read()]
 def printd(dd):
     print("".join([str(d) for d in dd]))
@@ -31,18 +31,50 @@ for i, val in enumerate(data):
         for _ in range(val):
             disk.append('.')
 printd(disk)
+
+def part1(disk):
+    ids = [i for i in disk if i != '.'] # this should be a dequeu
+    frag = []
+    for i in range(len(disk)):
+        if not ids:
+            break
+        if disk[i] != '.':
+            frag.append(ids.pop(0))
+        else:
+            frag.append(ids.pop())
+
+    return calc_checksum(frag)
+
+
+def get_empty_spaces(x):
+    i = 0
+    while x[i] == '.':
+        i += 1
+    return i
 ids = [i for i in disk if i != '.'] # this should be a dequeu
-frag = []
+print(ids)
+# count = sorted(Counter(ids).items(),reverse=True) # There must be a better
+# frag = []
+q = ids
+print(count)
+lfrag = data.copy()
+rfrag = data.copy()
+
 for i in range(len(disk)):
-    if not ids:
-        break
     if disk[i] != '.':
         frag.append(ids.pop(0))
     else:
-        frag.append(ids.pop())
+        spaces = get_empty_spaces(disk[i:])
 
+        test_id = q[-1]
+        if q.count(test_id) < 0:
+            frag.append()
+        elif q.count(test_id) <= spaces:
+            for j in range(q.count(test_id)):
+                q.remove(test_id)
+                frag.append(test_id)
+            break
 
-printd(frag)
-print(calc_checksum(frag))
-print(len(disk))
-print(len(data))
+    i = len(frag)
+# print(part1(disk))
+
