@@ -1,7 +1,11 @@
 from pathlib import Path
 import numpy as np
 
-#Quite happy with my idea for a solution but not with the crappy code
+#Quite happy with my idea for a solution but not with the crappy code.
+# Idea for part 2 is to find all neighbors of blob and walk anti-clockwise around it
+# to check how many corners there are. Some recursion for when bound is not contigous
+# and special handling when bound is a dead end.
+
 def in_range(mat,n):
     bounds = mat.shape
     for pos, bound in zip(n,bounds):
