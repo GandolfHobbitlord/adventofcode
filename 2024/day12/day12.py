@@ -36,8 +36,7 @@ def get_fences(mat,blob):
 with open(Path("2024") / "day12" / "day12_input.txt") as f:
 # with open(Path("2024") / "day12" / "day12_test.txt") as f:
     data = np.array([list(line) for line in f.read().split('\n')])
-# data = [parse_line(line) for line in f.read().split('\n')]
-print(data)
+
 h,w = data.shape
 visited = set()
 blobs =[]
@@ -57,10 +56,7 @@ for x in range(w):
 print(blobs)
 
 ans = [get_fences(data,b) * len(b) for b in blobs]
-print(sum(ans))
-
-m = np.pad(data,[1,1],mode='constant')
-
+print(f"Answer part 1: {sum(ans)}")
 
 N = (0,-1)
 W = (-1,0)
@@ -85,20 +81,21 @@ def get_next_dir(pos, curr_dir, bound,dbg):
         if (pos[0] + d_x, pos[1] +  d_y) in bound:
             return (d_x,d_y)
     return None
-def get_good_start(blob,bound,dbg):
+
+def get_left_start(blob,bound,dbg): #make sure we start with wall to the right
     for cord in bound:
         if (cord[0] + 1, cord[1]) in blob:
             return cord
 
 def get_corners_from_bound(bound,blob,dbg):
     bound = set(bound)
-    pos = get_good_start(blob,bound,dbg)
+    pos = get_left_start(blob,bound,dbg)
     pos_dir = get_next_dir(pos,S,bound,dbg)
     if pos_dir is None: #nowhere to go
         if len(bound) == 1:
             return 4 #Just single point
         bound.remove(pos)
-        return 4+get_corners_from_bound(bound,blob,dbg)
+        return 4 + get_corners_from_bound(bound,blob,dbg)
     corners = 0
     start = (pos,pos_dir)
     dbg[pos[1],pos[0]] = 'X'
@@ -123,28 +120,21 @@ def get_corners_from_bound(bound,blob,dbg):
                 not_visited = bound-visited
                 corners += get_corners_from_bound(not_visited,blob,dbg)
             break
-    print(corners)
     return corners
-def parse_blob(data, orig_blob):
 
+def score_blob_part2(data, orig_blob):
     m = np.pad(data,[1,1],mode='constant')
     blob = [(b_x +1, b_y + 1) for b_x,b_y in orig_blob] # fix padding coord
-    bounds = []
-
+    bounds = set()
     dbg = m.copy()
     for pos in blob:
-        bounds += set(get_different_neighbor(m,pos,blob=blob,diag=True))
-    print(dbg)
+        bounds.update(set(get_different_neighbor(m,pos,blob=blob,diag=True)))
     for x,y in bounds:
         dbg[y,x] = '.'
-    print(dbg)
-    print(len(blob))
+    # print(dbg)
     return get_corners_from_bound(bounds,blob,dbg)
-print(m)
-# print(blobs[1])
-print([len(b) for b in blobs])
-score = [(len(blob),parse_blob(data,blob)) for blob in blobs]
-print(score)
-print( [a * b for a,b in score])
-print(sum([a * b for a,b in score]))
-# print(sum(score))
+
+
+score = [(len(blob),score_blob_part2(data,blob)) for blob in blobs]
+print(f"Answer part 1: {sum([a * b for a,b in score])}")
+
