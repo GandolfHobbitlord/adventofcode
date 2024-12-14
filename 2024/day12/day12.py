@@ -103,8 +103,7 @@ def get_corners_from_bound(bound,blob,dbg):
     corners = 0
     start = (pos,pos_dir)
     dbg[pos[1],pos[0]] = 'X'
-    visited = set()
-    visited.add(pos)
+    visited = set([pos])
     while True:
         # print(dbg)
         next_pos = pos[0] + pos_dir[0], pos[1] + pos_dir[1]
