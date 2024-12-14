@@ -61,15 +61,12 @@ print(sum(ans))
 
 m = np.pad(data,[1,1],mode='constant')
 
-#order to try
-# left, forward,right,back
-# W,N,E,S
+
 N = (0,-1)
 W = (-1,0)
 E = (1,0)
 S = (0,1)
-# left, forward,right,back
-# W,N,E,S
+
 opposite = {}
 opposite[N] = S
 opposite[S] = N
@@ -97,12 +94,11 @@ def get_corners_from_bound(bound,blob,dbg):
     bound = set(bound)
     pos = get_good_start(blob,bound,dbg)
     pos_dir = get_next_dir(pos,S,bound,dbg)
-    if pos_dir is None:
+    if pos_dir is None: #nowhere to go
         if len(bound) == 1:
             return 4 #Just single point
-        new_bound =bound.copy()
-        new_bound.remove(pos)
-        return 4+get_corners_from_bound(new_bound,blob,dbg)
+        bound.remove(pos)
+        return 4+get_corners_from_bound(bound,blob,dbg)
     corners = 0
     start = (pos,pos_dir)
     dbg[pos[1],pos[0]] = 'X'
@@ -112,8 +108,6 @@ def get_corners_from_bound(bound,blob,dbg):
         # print(dbg)
         next_pos = pos[0] + pos_dir[0], pos[1] + pos_dir[1]
         dbg[next_pos[1],next_pos[0]] = 'X'
-        # if (next_pos, pos_dir) == start:
-        #     break
         pos = next_pos
         visited.add(pos)
         new_dir = get_next_dir(pos,pos_dir,bound,dbg)
@@ -124,12 +118,9 @@ def get_corners_from_bound(bound,blob,dbg):
         else:
             corners += 1
         pos_dir = new_dir
-        if (next_pos, pos_dir) == start:
+        if (next_pos, pos_dir) == start: # Made a loop
             if bound != visited:
-                A = dbg.copy()
                 not_visited = bound-visited
-                for x,y in not_visited:
-                    A[y,x] = 'X'
                 corners += get_corners_from_bound(not_visited,blob,dbg)
             break
     print(corners)
@@ -137,13 +128,12 @@ def get_corners_from_bound(bound,blob,dbg):
 def parse_blob(data, orig_blob):
 
     m = np.pad(data,[1,1],mode='constant')
-    blob = [(b_x +1, b_y + 1) for b_x,b_y in orig_blob]
+    blob = [(b_x +1, b_y + 1) for b_x,b_y in orig_blob] # fix padding coord
     bounds = []
 
     dbg = m.copy()
-    for x,y in blob:
-        bounds += set(get_different_neighbor(m,(x,y),blob=blob,diag=True)) #padding fucks up pos
-        # dbg[y+1,x+1] = 'Z'
+    for pos in blob:
+        bounds += set(get_different_neighbor(m,pos,blob=blob,diag=True))
     print(dbg)
     for x,y in bounds:
         dbg[y,x] = '.'
