@@ -17,7 +17,7 @@ with open(Path("2024") / "day13" / "day13_input.txt") as f:
 def solve(data,shift = 0):
     boards = [parse_board(b,shift) for b in data]
     solves = [np.linalg.solve(A,b) for A, b in boards]
-    pruned = [solve for solve in solves if np.all(np.isclose(solve,np.round(solve),atol=0.01,rtol=0))]
+    pruned = [solve for solve in solves if np.allclose(solve,np.round(solve),atol=0.01,rtol=0)]
     return round(sum([np.dot((3,1),s) for s in pruned]))
 
 print(f'Answer part1: {solve(data)}')
