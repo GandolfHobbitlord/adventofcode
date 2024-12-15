@@ -11,11 +11,6 @@ grid_size_x = None
 grid_size_y = None
 dir_map = {"^" : N, ">" : E, 'v' : S, "<" : W}
 
-opposite = {}
-opposite[N] = S
-opposite[S] = N
-opposite[W] = E
-opposite[E] = W
 def parse_line(line):
     # [int(i) for i in re.findall(r'-?\d+', line)]
     m = re.match(r'(\d+)-(\d+) (\w): (\w+)', line)
@@ -78,9 +73,9 @@ for move in moves:
     while space_pos != pos:
         next_pos = (space_pos[0] - v[0], space_pos[1] - v[1])
         grid[space_pos] = grid[next_pos]
-        grid[next_pos] = '.' #just for clarity
+        grid[next_pos] = '.'
         space_pos = next_pos
-    # print_grid(grid)
+
     pos = (nx,ny)
 
 print(score_grid(grid))
