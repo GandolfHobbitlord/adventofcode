@@ -68,7 +68,7 @@ def push_blocks_UD(grid,pos,v):
         to_move.add(pos)
         pos = pos[0], pos[1] + v[1]
         q.append(pos)
-    to_move = sorted(list(to_move),key=lambda x: x[1],reverse= v==S)
+    to_move = sorted(list(to_move),key=lambda x: x[1],reverse= v==S)# we need to swap it correct order
     for m in to_move:
         targ = m[0] + v[0], m[1] + v[1]
         grid[targ], grid[m] = grid[m], grid[targ]
@@ -83,18 +83,13 @@ with open(Path("2024") / "day15" / "day15_input.txt") as f:
     grid =parse_map(m)
 
 pos  = find_pos(grid)
-print(moves)
 
 for move in moves:
     if move == '\n':
         continue
-    print(pos)
-    # print_grid(grid)
-    print(move)
-
     v = dir_map[move]
     nx,ny = pos[0] + v[0], pos[1] + v[1]
-    if v in [W,E]:
+    if v in [W,E]: #just use old solution
         space_pos = get_next_space_LR(grid,pos,v)
         if space_pos == None:
             continue
@@ -105,8 +100,6 @@ for move in moves:
             space_pos = next_pos
     else:
         grid = push_blocks_UD(grid,pos,v)
-    pos = find_pos(grid) #ugly
-    # print(pos)
-    # print_grid(grid)
+    pos = find_pos(grid) #find where we are because I can't be bothered to keep track
 print_grid(grid)
 print(score_grid(grid))
