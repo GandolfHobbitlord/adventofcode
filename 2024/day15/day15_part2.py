@@ -55,12 +55,13 @@ def get_next_space_LR(grid, pos,v):
 def push_blocks_UD(grid,pos,v):
     to_move = set()
     q = [pos]
+    #Find all things to move
     while q:
         pos = q.pop(0)
         if grid[pos] == '.'or pos in to_move:
             continue
         elif grid[pos] == '#':
-            return grid
+            return grid # we can't move anything
         elif grid[pos] == '[':
             q.append((pos[0] + 1, pos[1]))
         elif grid[pos] == ']':
@@ -68,7 +69,8 @@ def push_blocks_UD(grid,pos,v):
         to_move.add(pos)
         pos = pos[0], pos[1] + v[1]
         q.append(pos)
-    to_move = sorted(list(to_move),key=lambda x: x[1],reverse= v==S)# we need to swap it correct order
+    # Move them, we need to swap in correct order, from furthest away to finally ourselves
+    to_move = sorted(list(to_move),key=lambda x: x[1],reverse= v==S)
     for m in to_move:
         targ = m[0] + v[0], m[1] + v[1]
         grid[targ], grid[m] = grid[m], grid[targ]
@@ -82,13 +84,11 @@ with open(Path("2024") / "day15" / "day15_input.txt") as f:
     m, moves = [line for line in f.read().split('\n\n')]
     grid =parse_map(m)
 
-pos  = find_pos(grid)
-
 for move in moves:
+    pos = find_pos(grid) #find where we are because I can't be bothered to keep track
     if move == '\n':
         continue
     v = dir_map[move]
-    nx,ny = pos[0] + v[0], pos[1] + v[1]
     if v in [W,E]: #just use old solution
         space_pos = get_next_space_LR(grid,pos,v)
         if space_pos == None:
@@ -100,6 +100,5 @@ for move in moves:
             space_pos = next_pos
     else:
         grid = push_blocks_UD(grid,pos,v)
-    pos = find_pos(grid) #find where we are because I can't be bothered to keep track
 print_grid(grid)
 print(score_grid(grid))
