@@ -42,15 +42,16 @@ def print_path(data,visited):
 def djikstra(data,start,stop):
     q =[]
     score_dict = defaultdict(lambda: 1e12)
-    # q = (steps, pos,dir, visited)
-    q.append((0,start,E,set()))
+    # q = (steps, pos,dir)
+    visited = set()
+    q.append((0,start,E))
     heapq.heapify(q)
     while q:
-        score,pos,curr_dir,v = heapq.heappop(q)
+        score,pos,curr_dir = heapq.heappop(q)
         if score > score_dict[(pos,curr_dir)]:
             continue
         score_dict[(pos,curr_dir)] = score
-        visited = v.copy()
+
         if pos == stop:
             return score
         visited.add(pos)
@@ -61,7 +62,7 @@ def djikstra(data,start,stop):
                         n_score = score + 1001
                     else:
                         n_score = score + 1
-                    s = (n_score,(nx,ny),new_dir,visited.copy())
+                    s = (n_score,(nx,ny),new_dir)
                     heapq.heappush(q,s)
 
 start = np.where(data == 'S')
