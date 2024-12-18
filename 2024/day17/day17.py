@@ -1,8 +1,5 @@
 from pathlib import Path
-import numpy as np
-import re
-from collections import Counter
-from collections import defaultdict
+
 
 
 
@@ -59,22 +56,19 @@ def run_tests():
     assert o == [4,6,3,5,6,3,5,2,1,0]
 # run_tests()
 
-#Misread and thought B,C mattered so thought i had to do it in correct order. not sure why it isn't functioning though...
+ans = []
+# Misread and thought B,C mattered first so thought i had to do it in correct order. not sure why it isn't functioning though...
 # def recursive_solve(program,shifts=0,A=0):
 #     if shifts == len(program):
-#         print(program)
+#         ans.append(A)
 #         return A
-#     for i in range(8):
-#         test_a = (i << (3*shifts)) | A
-#         out, _ = run(program,test_a)
-#         if program[:shifts+1] == out:
-#             res = recursive_solve(program,shifts+1,A=test_a)
-#             if res:
-#                 return res
-#     return None
+#     for test in range(8):
+#         test_a = (test << (shifts * 3)) | A
+#         out, _ = run(program, test_a)
+#         if out == program[:shifts+1]:
+#             recursive_solve(program,shifts+1,test_a)
 
-ans = []
-#B,C have no effect, just A
+B,C have no effect, just A
 def recursive_solve(program,shifts=0,A=0):
     if shifts == len(program):
         ans.append(A)
