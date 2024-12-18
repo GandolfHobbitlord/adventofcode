@@ -56,18 +56,6 @@ with open(Path("2024") / "day18" / "day18_input.txt") as f:
 # with open(Path("2024") / "day18" / "day18_test.txt") as f:
     corrupt = [parse_line(line) for line in f.read().split('\n')]
 
-
-
-# def test(corrupt):
-#     size = 7
-#     data = np.zeros((size,size),dtype=str)
-#     data[:] = '.'
-#     for x,y in corrupt[:12]:
-#         data[y][x]='#'
-#     print(data)
-#     a = djikstra(data,(0,0),(6,6))
-#     print(a)
-# test(corrupt)
 def part1(corrupt):
     size = 71
     data = np.zeros((size,size),dtype=str)
@@ -75,6 +63,21 @@ def part1(corrupt):
     for x,y in corrupt[:1024]:
         data[y][x]='#'
     print(data)
-    a = djikstra(data,(0,0),(70,70))
-    print(a)
-part1(corrupt)
+    res = djikstra(data,(0,0),(70,70))
+    return res
+
+#Should do binary search and only add one point each time but I'm lazy
+def part2(corrupt):
+    i = 1024
+    while True:
+        size = 71
+        data = np.zeros((size,size),dtype=str)
+        data[:] = '.'
+        for x,y in corrupt[:i]:
+            data[y][x]='#'
+        res = djikstra(data,(0,0),(70,70))
+        if res is None:
+            return corrupt[:i][-1]
+        i+=1
+print(f'Answer {part1(corrupt)=}')
+print(f'Answer {part2(corrupt)=}')

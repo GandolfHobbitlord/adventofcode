@@ -36,28 +36,28 @@ def print_grid(grid):
             line += grid[x,y]
         print(line)
 
+def print_grid(grid):
+
 def djikstra(data,start,stop):
     q =[]
     score_dict = defaultdict(lambda: 1e12)
     # q = (steps, pos,dir)
     visited = set()
-    q.append((0,start,E))
+    q.append((0,start))
     heapq.heapify(q)
     while q:
-        score,pos,curr_dir = heapq.heappop(q)
-        if score > score_dict[(pos,curr_dir)]:
+        score,pos = heapq.heappop(q)
+        if score > score_dict[(pos)]:
             continue
-        score_dict[(pos,curr_dir)] = score
+        score_dict[(pos)] = score
 
         if pos == stop:
             return score
+        if pos in visited:
+            continue
         visited.add(pos)
+
         for nx,ny in get_neighbor(data,pos):
-            if data[ny][nx] != '#' and (nx,ny) not in visited:
-                    new_dir = (nx-pos[0], ny-pos[1])
-                    if new_dir != curr_dir:
-                        n_score = score + 1001
-                    else:
-                        n_score = score + 1
-                    s = (n_score,(nx,ny),new_dir)
+            if data[ny][nx] != '#' and (nx,ny):
+                    s = (score+1 ,(nx,ny))
                     heapq.heappush(q,s)

@@ -57,16 +57,6 @@ def run_tests():
 # run_tests()
 
 ans = []
-# Misread and thought B,C mattered first so thought i had to do it in correct order. not sure why it isn't functioning though...
-# def recursive_solve(program,shifts=0,A=0):
-#     if shifts == len(program):
-#         ans.append(A)
-#         return A
-#     for test in range(8):
-#         test_a = (test << (shifts * 3)) | A
-#         out, _ = run(program, test_a)
-#         if out == program[:shifts+1]:
-#             recursive_solve(program,shifts+1,test_a)
 
 #B,C have no effect, just A
 def recursive_solve(program,shifts=0,A=0):
