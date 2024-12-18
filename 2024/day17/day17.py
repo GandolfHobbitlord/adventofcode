@@ -68,11 +68,11 @@ ans = []
 #         if out == program[:shifts+1]:
 #             recursive_solve(program,shifts+1,test_a)
 
-B,C have no effect, just A
+#B,C have no effect, just A
 def recursive_solve(program,shifts=0,A=0):
     if shifts == len(program):
         ans.append(A)
-        return A
+        return
     for test in range(8):
         test_a = (A<< 3) | test
         out, _ = run(program, test_a)
