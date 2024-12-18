@@ -1,7 +1,6 @@
 from pathlib import Path
 import numpy as np
 import re
-from collections import Counter
 from collections import defaultdict
 import heapq
 def parse_line(line):
@@ -37,18 +36,16 @@ def djikstra(data,start,stop):
     heapq.heapify(q)
     while q:
         score,pos = heapq.heappop(q)
-        if score > score_dict[(pos)]:
+        if score > score_dict[(pos)] or pos in visited:
             continue
         score_dict[(pos)] = score
 
         if pos == stop:
             return score
-        if pos in visited:
-            continue
         visited.add(pos)
 
         for nx,ny in get_neighbor(data,pos):
-            if data[ny][nx] != '#' and (nx,ny):
+            if data[ny][nx] != '#':
                     s = (score+1 ,(nx,ny))
                     heapq.heappush(q,s)
 
