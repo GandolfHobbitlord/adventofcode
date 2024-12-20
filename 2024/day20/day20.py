@@ -35,47 +35,53 @@ def get_neighbor(mat, pos):
             yield n[1], n[0]
 
 
-def dijkstra(data,start,stop,cheat = False):
+def dijkstra(data,start,stop):
     q =[]
     score_dict = defaultdict(lambda: 1e12)
     # q = (steps, pos,dir)
     visited = set()
-    q.append((0,start,cheat))
+    q.append((0,start))
     heapq.heapify(q)
     while q:
-        score, pos, cheat_available = heapq.heappop(q)
+        score, pos = heapq.heappop(q)
 
         if score > score_dict[(pos)] or pos in visited:
             continue
-        score_dict[(pos,cheat_available)] = score
+        score_dict[(pos)] = score
 
         if pos == stop:
-            return score
+            return score_dict
         visited.add(pos)
 
         for nx,ny in get_neighbor(data,pos):
             if data[ny][nx] != '#':
-                    s = (score+1 ,(nx,ny),cheat_available)
+                    s = (score+1 ,(nx,ny))
                     heapq.heappush(q,s)
 
-
 print(data)
-start = find_pos(data,'S')
+start= find_pos(data,'S')
 goal = find_pos(data,'E')
-no_cheat = dijkstra(data,start,goal)
-cheats = []
-for y in range(1,len(data)-1):
+cost = dijkstra(data,start,goal)
+saves = []
+for y in range(len(data)):
     print(y)
-    for x in range(1,len(data[0])-1):
+    for x in range(0,len(data[0])):
         if data[y,x] == '#':
-            cheat_data = data.copy()
-            cheat_data[y,x] = '.'
-            cheats.append(dijkstra(cheat_data,start,goal))
+            costs = sorted([cost[(nx,ny)] for nx,ny in get_neighbor(data,(x,y)) if data[ny,nx] != '#'])
+            # print(costs)
+            if len(costs) >1:
+                save = costs[-1] - costs[0] -2
+                print((x,y), save)
+                saves.append(save)
+# for (kx,ky), v in cost.items():
+#     print(v)
+#     data[ky,kx] = int(v)
+# print(data)
+print(sorted(saves))
+print(sum([s > 99 for s in saves]))
+# print(len(sorted(saves)))
 
-saves = sorted([no_cheat-c for c in cheats])
-saves = [i for i in saves if i > 0]
-print(Counter(saves))
 
-saves = sorted([no_cheat-c for c in cheats])
-saves = [i for i in saves if i >= 100]
-print(len(saves))
+# saves = sorted([no_cheat-c for c in cheats])
+# saves = [i for i in saves if i >= 100]
+# print(len(saves))
