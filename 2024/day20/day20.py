@@ -1,19 +1,13 @@
 from pathlib import Path
 import numpy as np
-import re
-from collections import Counter
 from collections import defaultdict
 import heapq
 
-def parse_line(line):
-    # [int(i) for i in re.findall(r'-?\d+', line)]
-    m = re.match(r'(\d+)-(\d+) (\w): (\w+)', line)
-    lo, hi, char, password = m.groups()
-    return int(lo), int(hi), char, password
-def find_pos(mat,char ='S'):
+def find_pos(mat,char):
     pos = np.where(mat==char)
     y,x = pos[0][0], pos[1][0]
     return x,y
+
 with open(Path("2024") / "day20" / "day20_input.txt") as f:
 # with open(Path("2024") / "day20" / "day20_test.txt") as f:
     data = np.array([list(line) for line in f.read().split('\n')])
@@ -38,7 +32,6 @@ def get_neighbor(mat, pos):
 def dijkstra(data,start,stop):
     q =[]
     score_dict = defaultdict(lambda: 1e12)
-    # q = (steps, pos,dir)
     visited = set()
     q.append((0,start))
     heapq.heapify(q)
@@ -58,30 +51,23 @@ def dijkstra(data,start,stop):
                     s = (score+1 ,(nx,ny))
                     heapq.heappush(q,s)
 
-print(data)
 start= find_pos(data,'S')
 goal = find_pos(data,'E')
 cost = dijkstra(data,start,goal)
 saves = []
-for y in range(len(data)):
-    print(y)
-    for x in range(0,len(data[0])):
-        if data[y,x] == '#':
-            costs = sorted([cost[(nx,ny)] for nx,ny in get_neighbor(data,(x,y)) if data[ny,nx] != '#'])
-            # print(costs)
-            if len(costs) >1:
-                save = costs[-1] - costs[0] -2
-                print((x,y), save)
-                saves.append(save)
-# for (kx,ky), v in cost.items():
-#     print(v)
-#     data[ky,kx] = int(v)
-# print(data)
-print(sorted(saves))
-print(sum([s > 99 for s in saves]))
-# print(len(sorted(saves)))
 
+def get_cheats(cost,max_mann):
+    saves = []
+    for k0 in cost.keys():
+        for k1 in cost.keys():
+            if cost[k0] > cost[k1]: # bug of the day to forget this line
+                continue
+            man_dist = abs(k0[0] - k1[0]) + abs(k0[1] - k1[1])
+            if man_dist <= max_mann:
+                saves.append(abs(cost[k0] - cost[k1]) - man_dist)
+    return saves
+ans1 = len([s for s in get_cheats(cost,max_mann=2) if s >= 100 ])
+ans2 = len([s for s in get_cheats(cost,max_mann=20) if s >= 100 ])
 
-# saves = sorted([no_cheat-c for c in cheats])
-# saves = [i for i in saves if i >= 100]
-# print(len(saves))
+print(f'Answer part 1 {ans1}')
+print(f'Answer part 2 {ans2}')
