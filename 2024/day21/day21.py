@@ -76,12 +76,8 @@ def get_minimum_moves(code, level,MAX_LEVEL):
 run_tests()
 run_example()
 
-
 def solve(codes, MAX_LEVEL):
     return sum ([int(c[:-1]) * get_minimum_moves(c,level=0,MAX_LEVEL=MAX_LEVEL) for c in codes])
-
-def part2(codes):
-    return sum ([int(c[:-1]) * get_minimum_moves(c,level=0,MAX_LEVEL=26) for c in codes])
 
 with open(Path("2024") / "day21" / "day21_input.txt") as f:
     codes = [line for line in f.read().split('\n')]
