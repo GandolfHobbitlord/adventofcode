@@ -49,7 +49,7 @@ def get_seq(d):
 def part2(data):
     resd = defaultdict(int)
     for d in data:
-        turnd= get_seq(d)
+        turnd = get_seq(d)
         for k,v in turnd.items():
             resd[k] += v
     print(max(resd.values()))
