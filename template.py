@@ -10,8 +10,8 @@ def parse_line(line):
     lo, hi, char, password = m.groups()
     return int(lo), int(hi), char, password
 
-# with open(Path("2024") / "dayx" / "dayx_input.txt") as f:
-with open(Path("2024") / "dayx" / "dayx_test.txt") as f:
+# with open(Path("2025") / "dayx" / "dayx_input.txt") as f:
+with open(Path("2025") / "dayx" / "dayx_test.txt") as f:
     data = [line for line in f.read().split('\n')]
     data = [parse_line(line) for line in f.read().split('\n')]
 
