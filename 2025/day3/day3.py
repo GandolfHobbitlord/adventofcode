@@ -13,17 +13,29 @@ with open(Path("2025") / "day3" / "day3_input.txt") as f:
     # data = [line for line in f.read().split('\n')]
     data = [parse_line(line) for line in f.read().split('\n')]
 
-ans = 0
-for line in data:
-    largest = sorted(line)[-1]
+def get_largest(line, pos,tot):
+    num_to_right = tot - (pos+1)
+    if num_to_right:
+        largest = sorted(line[:-num_to_right])[-1]
+    else:
+        largest = sorted(line)[-1]
     i = line.index(largest)
-    if i == len(line)-1:
-        largest = sorted(line)[-2]
-        i = line.index(largest)
+    return largest,line[i+1:]
 
-    print(largest, i)
-    second = sorted(line[i+1:])[-1]
-    res = int(str(largest) + str(second))
-    print(res)
-    ans += res
+ans = []
+tot = 12
+for line in data:
+    s = ""
+    curr_ind = 0
+    l = line.copy()
+    for pos in range(tot):
+        largest,l = get_largest(l,pos,tot)
+        s+=str(largest)
+    ans.append(int(s))
+    # second = sorted(line[i+1:])[-1]
+    # res = int(str(largest) + str(second))
+    # print(res)
+    # ans += res
 print(ans)
+print(sum(ans))
+# print(ans)
