@@ -17,28 +17,28 @@ def parse_line(line):
 
 with open(Path("2025") / "day4" / "day4_input.txt") as f:
 # with open(Path("2025") / "day4" / "day4_test.txt") as f:
-    # data = [line for line in f.read().split('\n')]
     data = [parse_line(line) for line in f.read().split('\n')]
 
 valids = [True]
 tot_removed = 0
+part1 = None
+
 while len(valids) != 0:
     valids = []
     for y in range(len(data)):
         for x in range(len(data[0])):
             if data[y][x] != '@':
                 continue
-            rolls = 0
-            for yy,xx in get_neighbors(y,x,data,diag=True):
-                if data[yy][xx] == '@':
-                    rolls +=1
-            if rolls < 4:
+            roll_neighbors = len([(yy,xx) for yy,xx in get_neighbors(y,x,data,diag=True) if data[yy][xx] == '@'])
+            if roll_neighbors < 4:
                 valids.append((x,y))
 
-    print(f"removed {len(valids)}")
-    tot_removed += len(valids)
     for x,y in valids:
         data[y][x] = '.'
-    # print(np.array(data))
+    if part1 is None:
+        part1 = len(valids)
+    tot_removed += len(valids)
 
-print(tot_removed)
+print(f"Answer part1: {part1}")
+print(f"Answer part2: {tot_removed}")
+
