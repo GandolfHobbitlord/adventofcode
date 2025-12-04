@@ -6,12 +6,12 @@ def in_range(mat,n):
     return True
 
 #pos is (x,y) return is (x,y)
-def get_neighbor(mat, pos):
-    x,y  = pos
-    neighbors = [(y-1,x), (y+1,x), (y,x-1), (y,x+1)]
-    for n in neighbors:
-        if in_range(mat,n):
-            yield n[1], n[0]
+# def get_neighbor(mat, pos,diag=False):
+#     x,y  = pos
+#     neighbors = [(y-1,x), (y+1,x), (y,x-1), (y,x+1)]
+#     for n in neighbors:
+#         if in_range(mat,n):
+#             yield n[1], n[0]
 
 def xy_to_grid(a, size):
     res = np.zeros((size))
@@ -19,9 +19,12 @@ def xy_to_grid(a, size):
     np.rot90(res)
     return res
 
-def get_neighbors(r, c, grid):
+def get_neighbors(r, c, grid,diag=False):
     ### Get valid neighbors for a cell in the grid. ###
     neighbors = []
+    dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    if diag == True:
+        dirs += [(-1,-1),(1,-1), (-1,1), (1,1)]
     for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:  # Up, Down, Left, Right
         nr, nc = r + dr, c + dc
         if 0 <= nr < len(grid) and 0 <= nc < len(grid[0]):

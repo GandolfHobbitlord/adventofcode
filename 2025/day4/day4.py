@@ -1,8 +1,4 @@
 from pathlib import Path
-import numpy as np
-import re
-from collections import Counter
-from collections import defaultdict
 
 def get_neighbors(r, c, grid,diag=False):
     ### Get valid neighbors for a cell in the grid. ###
@@ -18,28 +14,31 @@ def get_neighbors(r, c, grid,diag=False):
 
 def parse_line(line):
     return [s for s in line]
-    return int(lo), int(hi), char, password
 
 with open(Path("2025") / "day4" / "day4_input.txt") as f:
 # with open(Path("2025") / "day4" / "day4_test.txt") as f:
     # data = [line for line in f.read().split('\n')]
     data = [parse_line(line) for line in f.read().split('\n')]
-valids = []
-print(data)
-for y in range(len(data)):
-    for x in range(len(data[0])):
-        if data[y][x] != '@':
-            continue
-        # print(x,y)
-        rolls = 0
-        for yy,xx in get_neighbors(y,x,data,diag=True):
-            if data[yy][xx] == '@':
-                rolls +=1
-        if rolls < 4:
-            valids.append((x,y))
 
-for x,y in valids:
-    data[y][x] = 'X'
-print(np.array(data))
+valids = [True]
+tot_removed = 0
+while len(valids) != 0:
+    valids = []
+    for y in range(len(data)):
+        for x in range(len(data[0])):
+            if data[y][x] != '@':
+                continue
+            rolls = 0
+            for yy,xx in get_neighbors(y,x,data,diag=True):
+                if data[yy][xx] == '@':
+                    rolls +=1
+            if rolls < 4:
+                valids.append((x,y))
 
-print(len(valids))
+    print(f"removed {len(valids)}")
+    tot_removed += len(valids)
+    for x,y in valids:
+        data[y][x] = '.'
+    # print(np.array(data))
+
+print(tot_removed)
