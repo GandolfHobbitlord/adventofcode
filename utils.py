@@ -22,15 +22,14 @@ def xy_to_grid(a, size):
 def get_neighbors(r, c, grid,diag=False):
     ### Get valid neighbors for a cell in the grid. ###
     neighbors = []
-    dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Up, Down, Left, Right
     if diag == True:
         dirs += [(-1,-1),(1,-1), (-1,1), (1,1)]
-    for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:  # Up, Down, Left, Right
+    for dr, dc in dirs:
         nr, nc = r + dr, c + dc
         if 0 <= nr < len(grid) and 0 <= nc < len(grid[0]):
             neighbors.append((nr, nc))
     return neighbors
-
 
 def print_grid(grid):
     for y in range(grid_size_y):
@@ -39,7 +38,6 @@ def print_grid(grid):
             line += grid[x,y]
         print(line)
 
-def print_grid(grid):
 
 def djikstra(data,start,stop):
     q =[]
