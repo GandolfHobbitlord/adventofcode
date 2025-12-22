@@ -22,12 +22,13 @@ def intersect(s0,s1,l0,l1):
     x1,y1 = s1
     low_x,top_x  = (x0, x1) if x0 < x1 else (x1,x0)
     low_y,top_y  = (y0, y1) if y0 < y1 else (y1,y0)
+    # This is not enough but given the input shape it works
     if (low_x >= l0[0] and low_x >= l1[0]) or (top_x <= l0[0] and top_x <= l1[0]):
         return False
     if (low_y >= l0[1] and low_y >= l1[1]) or (top_y <= l0[1] and top_y <= l1[1]):
         return False
     return True
-    
+
 def part2(points):
     areas = []
     points = points + [points[0]]
